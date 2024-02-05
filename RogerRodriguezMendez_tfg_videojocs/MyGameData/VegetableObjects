@@ -1,0 +1,14 @@
+{
+    "items": [
+        {
+            "name": "Carrot",
+            "myStates": [
+                0,
+                1,
+                4
+            ],
+            "myState": 0,
+            "myStateIndex": 0
+        }
+    ]
+}

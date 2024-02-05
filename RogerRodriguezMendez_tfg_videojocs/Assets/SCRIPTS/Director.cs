@@ -6,6 +6,7 @@ using UnityEngine;
 public class Director : MonoBehaviour
 {
     Vegetable constructor;
+    [SerializeField] bool load;
 
     void Start()
     {
@@ -16,6 +17,10 @@ public class Director : MonoBehaviour
 
     void Update()
     {
-        
+        if (load)
+        {
+            DataManager.LoadVegetableObject();
+            load = !load;
+        }
     }
 }

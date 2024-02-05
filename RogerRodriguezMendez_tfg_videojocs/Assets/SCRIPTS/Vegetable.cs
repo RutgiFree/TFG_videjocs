@@ -2,29 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Vegetable : MonoBehaviour, IConstructable //podria ser aquest el constructor?
+public class Vegetable : MonoBehaviour, IConstructable //es el constructor
 {
     Dictionary<string, vegetableObject> myDictionary;
     vegetableObject activeVegetable;
 
-    private class vegetableObject //i aquest podria ser els diferents tipus de contructors?
-    {
-        public string name;
-        public Rules.states[] myStates;
-        public Rules.states myState;
-        public int myStateIndex;
-
-        public vegetableObject(string name, Rules.states[] myStates, int myStateIndex)
-        {
-            if (myStates.Length == 0) throw new System.Exception("EMPTY STATES ARRARY");
-
-            this.name = name;
-            this.myStates = myStates;
-            this.myStateIndex = myStateIndex;
-            if(myStateIndex < myStates.Length) myState = myStates[myStateIndex];
-            else  myState = myStates[myStateIndex];
-        }
-    }
 
     private void Awake()
     {
