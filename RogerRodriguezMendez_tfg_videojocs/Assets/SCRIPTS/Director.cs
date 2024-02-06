@@ -1,17 +1,20 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
+using System.Linq;
 using UnityEngine;
 
- [RequireComponent(typeof(Vegetable))]
+ [RequireComponent(typeof(VegetableContructor))]
 public class Director : MonoBehaviour
 {
-    Vegetable constructor;
+    VegetableContructor constructor;
     [SerializeField] bool load;
+    [SerializeField] string vegetablename;
+    [SerializeField] string[] vegetablesName = DataManager.vegetablesNames;
+
 
     void Start()
     {
 
-        constructor = GetComponent<Vegetable>();
+        constructor = GetComponent<VegetableContructor>();
     }
 
 
@@ -19,8 +22,22 @@ public class Director : MonoBehaviour
     {
         if (load)
         {
-            DataManager.LoadVegetableObject();
             load = !load;
+            if (vegetablename.Equals(""))
+            {
+                vegetablename = "WRITE HERE ¬¬";
+                return;
+            }
+            try
+            {
+                constructor.setVegetable(DataManager.getVegetable(vegetablename));
+            }
+            catch (Exception)
+            {
+                vegetablename = "NOT FOUND :(";
+                return;
+            }
+            vegetablename = "FOUND :)";
         }
     }
 }

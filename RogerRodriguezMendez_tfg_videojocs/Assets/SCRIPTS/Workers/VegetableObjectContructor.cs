@@ -5,22 +5,23 @@ using System.Diagnostics;
 using UnityEngine;
 
 [Serializable]
-public class vegetableObject //es el tipus especific de contructor
+public class VegetableObjectContructor //es el tipus especific de contructor
 {
     public string name;
     public Rules.states[] myStates;
     public Rules.states myState;
     public int myStateIndex;
 
-    public vegetableObject(string name, Rules.states[] myStates, int myStateIndex)
+    public VegetableObjectContructor(string name, Rules.states[] myStates, int myStateIndex)
     {
         if (myStates.Length == 0) throw new System.Exception("EMPTY STATES ARRARY");
 
+        if (myStateIndex < myStates.Length) this.myStateIndex = myStateIndex;
+        else this.myStateIndex = 0;
+
         this.name = name;
         this.myStates = myStates;
-        this.myStateIndex = myStateIndex;
-        if (myStateIndex < myStates.Length) myState = myStates[myStateIndex];
-        else myState = myStates[myStateIndex];
+        this.myState = myStates[this.myStateIndex];
     }
 
     public string debug()//es per comprar que funcione be el que vull intentar
@@ -28,7 +29,7 @@ public class vegetableObject //es el tipus especific de contructor
         return "{"+name+","+ abc() + "," + myState + "," + myStateIndex +"}";
     }
 
-    private string abc()
+    private string abc()//es per comprar que funcione be el que vull intentar
     {
         string retorn = "";
         for (int i = 0; i < myStates.Length; i++)
