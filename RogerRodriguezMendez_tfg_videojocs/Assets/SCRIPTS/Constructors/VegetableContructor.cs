@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class VegetableContructor : MonoBehaviour, IConstructable //es el constructor
 {
-    VegetableObjectContructor activeVegetable;
+    VegetableObjectWorker activeVegetable;
     [SerializeField] string vName;
 
     void Start()
@@ -39,7 +39,7 @@ public class VegetableContructor : MonoBehaviour, IConstructable //es el constru
     }
 
 
-    public void setVegetable(VegetableObjectContructor vegetable)
+    public void setVegetable(VegetableObjectWorker vegetable)
     {
         this.activeVegetable = vegetable;
         vName = activeVegetable.name;

@@ -5,14 +5,14 @@ using System.Diagnostics;
 using UnityEngine;
 
 [Serializable]
-public class VegetableObjectContructor //es el tipus especific de contructor
+public class VegetableObjectWorker //es el tipus especific de contructor
 {
     public string name;
     public Rules.states[] myStates;
     public Rules.states myState;
     public int myStateIndex;
 
-    public VegetableObjectContructor(string name, Rules.states[] myStates, int myStateIndex)
+    public VegetableObjectWorker(string name, Rules.states[] myStates, int myStateIndex)
     {
         if (myStates.Length == 0) throw new System.Exception("EMPTY STATES ARRARY");
 

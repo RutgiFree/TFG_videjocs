@@ -16,7 +16,7 @@ public class SerialisableMapContainer<TK, TV>
 public class DataManager
 {
     const string dataPath= "MyGameData";
-    private static Dictionary<string, VegetableObjectContructor> vegetablesMemory;
+    private static Dictionary<string, VegetableObjectWorker> vegetablesMemory;
     public static string[] vegetablesNames { get; private set; }
 
 
@@ -24,14 +24,14 @@ public class DataManager
     static DataManager()
     {
 
-        Dictionary<string, VegetableObjectContructor> auxData = LoadVegetableObject();
+        Dictionary<string, VegetableObjectWorker> auxData = LoadVegetableObject();
         if (auxData == null)
         {
-            auxData = new Dictionary<string, VegetableObjectContructor>();
+            auxData = new Dictionary<string, VegetableObjectWorker>();
 
             //carrot
-            VegetableObjectContructor veg = 
-                new VegetableObjectContructor(
+            VegetableObjectWorker veg = 
+                new VegetableObjectWorker(
                         "Carrot", 
                         new Rules.states[] { Rules.states.GERMINATION, Rules.states.GROWING, Rules.states.DYING }, 
                         0);
@@ -39,7 +39,7 @@ public class DataManager
 
             //eaggplant
             veg = 
-                new VegetableObjectContructor(
+                new VegetableObjectWorker(
                         "Eaggplant", 
                         new Rules.states[] { Rules.states.GERMINATION, Rules.states.GROWING, Rules.states.FLOWERING, Rules.states.RIPENING, Rules.states.DYING }, 
                         0);
@@ -53,13 +53,13 @@ public class DataManager
 
     }
 
-    public static VegetableObjectContructor getVegetable(string name)
+    public static VegetableObjectWorker getVegetable(string name)
     {
         if (!vegetablesNames.Contains(name.ToUpper())) throw new Exception("Vegetable not present");
         return vegetablesMemory[name.ToUpper()];
     }
 
-    public static void SaveVegetableObject(Dictionary<string, VegetableObjectContructor> vegetable)
+    public static void SaveVegetableObject(Dictionary<string, VegetableObjectWorker> vegetable)
     {
         string combinePath = Path.Combine(dataPath, "VegetableObjectsMap");
         try
@@ -68,7 +68,7 @@ public class DataManager
             Directory.CreateDirectory(Path.GetDirectoryName(combinePath));
 
             //the data
-            SerialisableMapContainer<string, VegetableObjectContructor> container = new SerialisableMapContainer<string, VegetableObjectContructor>();
+            SerialisableMapContainer<string, VegetableObjectWorker> container = new SerialisableMapContainer<string, VegetableObjectWorker>();
             container.keys = vegetable.Keys.ToArray(); 
             container.values = vegetable.Values.ToArray();
 
@@ -95,12 +95,12 @@ public class DataManager
        
     }
 
-    public static Dictionary<string, VegetableObjectContructor> LoadVegetableObject()
+    public static Dictionary<string, VegetableObjectWorker> LoadVegetableObject()
     {
         string combinePath = Path.Combine(dataPath, "VegetableObjectsMap");
 
         if (!File.Exists(combinePath)) return null; //no information to load
-        Dictionary<string, VegetableObjectContructor> loadedVegetables = null; //inicilise variable
+        Dictionary<string, VegetableObjectWorker> loadedVegetables = null; //inicilise variable
 
         try
         {
@@ -116,12 +116,12 @@ public class DataManager
             }
 
             //the data
-            SerialisableMapContainer<string, VegetableObjectContructor> container = JsonUtility.FromJson<SerialisableMapContainer<string, VegetableObjectContructor>>(rawData);
+            SerialisableMapContainer<string, VegetableObjectWorker> container = JsonUtility.FromJson<SerialisableMapContainer<string, VegetableObjectWorker>>(rawData);
             string[] keys = container.keys;
-            VegetableObjectContructor[] values = container.values;
+            VegetableObjectWorker[] values = container.values;
 
 
-            Dictionary<string, VegetableObjectContructor> aux = new Dictionary<string, VegetableObjectContructor>();
+            Dictionary<string, VegetableObjectWorker> aux = new Dictionary<string, VegetableObjectWorker>();
 
             for (int i=0; i <keys.Length; i++)
             {
