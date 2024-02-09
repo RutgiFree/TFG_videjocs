@@ -15,11 +15,13 @@ public static class Rules
     public static readonly char NEGATIVE_ROTATION = '-';
     public enum states
     {
+        NONE,//No s'ha definit cap estat
         GERMINATION,
         GROWING,
         FLOWERING,
         RIPENING,//maduració
         DYING,//La planta està assecant-se, per tant, morin
+        DEATH,//La planta està morta
     }
 
 }

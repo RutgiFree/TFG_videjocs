@@ -7,23 +7,23 @@
         {
             "name": "Carrot",
             "myStates": [
-                0,
                 1,
-                4
+                2,
+                5
             ],
-            "myState": 0,
+            "myState": 1,
             "myStateIndex": 0
         },
         {
             "name": "Eaggplant",
             "myStates": [
-                0,
                 1,
                 2,
                 3,
-                4
+                4,
+                5
             ],
-            "myState": 0,
+            "myState": 1,
             "myStateIndex": 0
         }
     ]

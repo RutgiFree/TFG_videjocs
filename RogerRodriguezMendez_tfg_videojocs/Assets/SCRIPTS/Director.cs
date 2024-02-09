@@ -2,19 +2,20 @@ using System;
 using System.Linq;
 using UnityEngine;
 
- [RequireComponent(typeof(VegetableContructor))]
+ [RequireComponent(typeof(VegetableProxy))]
 public class Director : MonoBehaviour
-{
-    VegetableContructor constructor;
-    [SerializeField] bool load;
-    [SerializeField] string vegetablename;
+{//vegetable sistem? com a nom
+    VegetableProxy vProxy;
     [SerializeField] string[] vegetablesName = DataManager.vegetablesNames;
+    [SerializeField] bool load;
+    [SerializeField] string vName;
+    [SerializeField] bool nextState;
+    [SerializeField] Rules.states vState;
 
 
     void Start()
     {
-
-        constructor = GetComponent<VegetableContructor>();
+        vProxy = GetComponent<VegetableProxy>();
     }
 
 
@@ -23,21 +24,35 @@ public class Director : MonoBehaviour
         if (load)
         {
             load = !load;
-            if (vegetablename.Equals(""))
+            if (vName.Equals(""))
             {
-                vegetablename = "WRITE HERE ¬¬";
+                vName = "WRITE HERE ¬¬";
                 return;
             }
             try
             {
-                constructor.setVegetable(DataManager.getVegetable(vegetablename));
+                vProxy.setVegetable(DataManager.getVegetable(vName));
             }
             catch (Exception)
             {
-                vegetablename = "NOT FOUND :(";
+                vName = "NOT FOUND :(";
                 return;
             }
-            vegetablename = "FOUND :)";
+            vName = "FOUND :)";
+        }
+
+        if (nextState)
+        {
+            nextState = !nextState;
+            try
+            {
+                vState = vProxy.nextState();
+                if (vState == Rules.states.DEATH) Destroy(this);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Something goes wrong: "+e.Message);
+            }
         }
     }
 }
