@@ -7,7 +7,6 @@ public class Vegetable : IServiceable //es el tipus especific de contructor
     public Rules.states[] myStates;
     public Rules.states myState;
     public int myStateIndex;
-
     public Vegetable(string name, Rules.states[] myStates, int myStateIndex)
     {
         if (myStates.Length == 0) throw new System.Exception("EMPTY STATES ARRARY");

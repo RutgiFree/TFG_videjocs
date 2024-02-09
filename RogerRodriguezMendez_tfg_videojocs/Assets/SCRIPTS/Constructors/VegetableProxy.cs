@@ -7,7 +7,7 @@ public class VegetableProxy : MonoBehaviour, IServiceable //es el constructor
     //patro representant? -> patro proxy o patro decorator?
     Vegetable myVegetable;
     [SerializeField] string vName;
-    [SerializeField] Rules.states vState;
+    [SerializeField] public Rules.states vState { get; private set; }
 
     void Start()
     {
@@ -44,5 +44,7 @@ public class VegetableProxy : MonoBehaviour, IServiceable //es el constructor
         vState = myVegetable.nextState();
         return vState;
     }
+
+
 
 }

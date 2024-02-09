@@ -9,6 +9,8 @@ public class Director : MonoBehaviour
     [SerializeField] string[] vegetablesName = DataManager.vegetablesNames;
     [SerializeField] bool load;
     [SerializeField] string vName;
+    [SerializeField] bool nextIteration;
+    [SerializeField] int vIteretionsDone;
     [SerializeField] bool nextState;
     [SerializeField] Rules.states vState;
 
@@ -32,6 +34,7 @@ public class Director : MonoBehaviour
             try
             {
                 vProxy.setVegetable(DataManager.getVegetable(vName));
+                vState = vProxy.vState;
             }
             catch (Exception)
             {
@@ -41,13 +44,28 @@ public class Director : MonoBehaviour
             vName = "FOUND :)";
         }
 
+        if (nextIteration)
+        {
+            nextIteration = !nextIteration;
+            try
+            {
+                vProxy.pasTime();
+                vIteretionsDone++;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Something goes wrong: " + e.Message);
+                return;
+            }
+        }
+
         if (nextState)
         {
             nextState = !nextState;
             try
             {
                 vState = vProxy.nextState();
-                if (vState == Rules.states.DEATH) Destroy(this);
+                if( vState == Rules.states.DEATH) Destroy(this.gameObject);
             }
             catch (Exception e)
             {
