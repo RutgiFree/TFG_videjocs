@@ -4,13 +4,7 @@ using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-
-[Serializable]
-public class SerialisableMapContainer<TK, TV>
-{
-    public TK[] keys;
-    public TV[] values;
-}
+using Newtonsoft.Json;
 
 [InitializeOnLoad]
 public class DataManager
@@ -18,8 +12,6 @@ public class DataManager
     const string dataPath= "MyGameData";
     private static Dictionary<string, Vegetable> vegetablesMemory;
     public static string[] vegetablesNames { get; private set; }
-
-
 
     static DataManager()
     {
@@ -30,19 +22,59 @@ public class DataManager
             auxData = new Dictionary<string, Vegetable>();
 
             //carrot
+            Dictionary<Rules.DNAnucleotides, DNAinfo[]> myDNA = new Dictionary<Rules.DNAnucleotides, DNAinfo[]>
+            {
+                { 
+                    Rules.DNAnucleotides.NONE, 
+                    new DNAinfo[] 
+                    { 
+                        new DNAinfo("G[+N]G", 5), 
+                        new DNAinfo("G[-N]G", 10) 
+                    }
+                },
+                {
+                    Rules.DNAnucleotides.GROW,
+                    new DNAinfo[]
+                    {
+                        new DNAinfo("G", 5),
+                        new DNAinfo("GG", 10)
+                    }
+                }
+            };
+
+
             Vegetable veg = 
                 new Vegetable(
                         "Carrot", 
                         new Rules.states[] { Rules.states.GERMINATION, Rules.states.GROWING, Rules.states.DYING }, 
-                        0);
+                        0, myDNA);
             auxData.Add(veg.name.ToUpper(), veg);
 
             //eaggplant
+            myDNA = new Dictionary<Rules.DNAnucleotides, DNAinfo[]>
+            {
+                {
+                    Rules.DNAnucleotides.NONE,
+                    new DNAinfo[]
+                    {
+                        new DNAinfo("G[+N]", 5),
+                        new DNAinfo("G[-N]", 10)
+                    }
+                },
+                {
+                    Rules.DNAnucleotides.GROW,
+                    new DNAinfo[]
+                    {
+                        new DNAinfo("G", 5),
+                        new DNAinfo("GG", 10)
+                    }
+                }
+            };
             veg = 
                 new Vegetable(
                         "Eaggplant", 
                         new Rules.states[] { Rules.states.GERMINATION, Rules.states.GROWING, Rules.states.FLOWERING, Rules.states.RIPENING, Rules.states.DYING }, 
-                        0);
+                        0, myDNA);
             auxData.Add(veg.name.ToUpper(), veg);
 
 
@@ -64,15 +96,15 @@ public class DataManager
         string combinePath = Path.Combine(dataPath, "VegetableObjectsMap");
         try
         {
+            if (File.Exists(combinePath)) Debug.Log("AREADY EXISTING PATH... REWRITING IT");
+
+            Debug.Log("SAVING VEGETABLES... ");
+
             //if the directory is not created it will be created.
             Directory.CreateDirectory(Path.GetDirectoryName(combinePath));
 
             //the data
-            SerialisableMapContainer<string, Vegetable> container = new SerialisableMapContainer<string, Vegetable>();
-            container.keys = vegetable.Keys.ToArray(); 
-            container.values = vegetable.Values.ToArray();
-
-            string jsonData = JsonUtility.ToJson(container, true);
+            string jsonData = JsonConvert.SerializeObject(vegetable, Formatting.Indented);
 
             //all is ready to be saved, now it's time to create the channels:
             using (FileStream strem = new FileStream(combinePath, FileMode.Create))
@@ -83,14 +115,11 @@ public class DataManager
                 }
             }
 
-            for (int i = 0; i < container.values.Length; i++)
-            {
-                Debug.Log("SAVED: "+ container.values[i].debug());
-            }
+            Debug.Log("SAVED: "+vegetable.Count);
         }
         catch( Exception e)
         {
-            Debug.LogError("ERROR ON: SaveVegetableObject(vegetableObject[] vegetable)->" + combinePath + "\n" + e);
+            Debug.LogError("ERROR ON: SaveVegetableObject(vegetableObject[] vegetable)->" + combinePath + "\n" + e.StackTrace);
         }
        
     }
@@ -100,44 +129,47 @@ public class DataManager
         string combinePath = Path.Combine(dataPath, "VegetableObjectsMap");
 
         if (!File.Exists(combinePath)) return null; //no information to load
-        Dictionary<string, Vegetable> loadedVegetables = null; //inicilise variable
-
         try
         {
-            string rawData = "";
+            Debug.Log("LOADING VEGETABLES... ");
 
-            //all is ready to be loaded, now it's time to create the channels:
-            using (FileStream strem = new FileStream(combinePath, FileMode.Open))
+            if (File.Exists(combinePath))
             {
-                using (StreamReader reader = new StreamReader(strem))
+
+                string rawData = "";
+
+                //all is ready to be loaded, now it's time to create the channels:
+                using (FileStream strem = new FileStream(combinePath, FileMode.Open))
                 {
-                    rawData = reader.ReadToEnd();
+                    using (StreamReader reader = new StreamReader(strem))
+                    {
+                        rawData = reader.ReadToEnd();
+                    }
                 }
+
+                // Deserialize the JSON string into a Dictionary
+                var loadedVegetables = JsonConvert.DeserializeObject<Dictionary<string, Vegetable>>(rawData);
+
+                var debug = "";
+                foreach(Vegetable v in loadedVegetables.Values)
+                {
+                    debug = debug + v.debug() + "\n";
+                }
+                Debug.Log("LOADED: " + loadedVegetables.Count+ "\n"+ debug);
+
+                return loadedVegetables;
             }
-
-            //the data
-            SerialisableMapContainer<string, Vegetable> container = JsonUtility.FromJson<SerialisableMapContainer<string, Vegetable>>(rawData);
-            string[] keys = container.keys;
-            Vegetable[] values = container.values;
-
-
-            Dictionary<string, Vegetable> aux = new Dictionary<string, Vegetable>();
-
-            for (int i=0; i <keys.Length; i++)
+            else
             {
-                aux.Add(keys[i], values[i]);
-                Debug.Log("LOADING: "+keys[i]+" ->" + values[i].debug());
+                Debug.Log("No saved vegetable data found.");
+                return null;
             }
-
-            loadedVegetables = aux;
-            Debug.Log("LOADED ALL: "+loadedVegetables.Count);
-
         }
         catch (Exception e)
         {
-            Debug.LogError("ERROR ON: LoadVegetableObject() ->"+ combinePath+"\n" + e);
+            Debug.LogError("ERROR ON: LoadVegetableObject() ->"+ combinePath + "\n" + e.StackTrace);
         }
 
-        return loadedVegetables;
+        return null;
     }
 }

@@ -1,30 +1,70 @@
 {
-    "keys": [
-        "CARROT",
-        "EAGGPLANT"
+  "CARROT": {
+    "name": "Carrot",
+    "myStates": [
+      1,
+      2,
+      5
     ],
-    "values": [
+    "myState": 1,
+    "myStateIndex": 0,
+    "DNA": {
+      "NONE": [
         {
-            "name": "Carrot",
-            "myStates": [
-                1,
-                2,
-                5
-            ],
-            "myState": 1,
-            "myStateIndex": 0
+          "info": "G[+N]G",
+          "probability": 5.0
         },
         {
-            "name": "Eaggplant",
-            "myStates": [
-                1,
-                2,
-                3,
-                4,
-                5
-            ],
-            "myState": 1,
-            "myStateIndex": 0
+          "info": "G[-N]G",
+          "probability": 10.0
         }
-    ]
+      ],
+      "GROW": [
+        {
+          "info": "G",
+          "probability": 5.0
+        },
+        {
+          "info": "GG",
+          "probability": 10.0
+        }
+      ]
+    },
+    "currentDNA": null
+  },
+  "EAGGPLANT": {
+    "name": "Eaggplant",
+    "myStates": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "myState": 1,
+    "myStateIndex": 0,
+    "DNA": {
+      "NONE": [
+        {
+          "info": "G[+N]",
+          "probability": 5.0
+        },
+        {
+          "info": "G[-N]",
+          "probability": 10.0
+        }
+      ],
+      "GROW": [
+        {
+          "info": "G",
+          "probability": 5.0
+        },
+        {
+          "info": "GG",
+          "probability": 10.0
+        }
+      ]
+    },
+    "currentDNA": null
+  }
 }
