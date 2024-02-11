@@ -11,6 +11,7 @@ public class Director : MonoBehaviour
     [SerializeField] string vName;
     [SerializeField] bool nextIteration;
     [SerializeField] int vIteretionsDone;
+    [SerializeField] string vDNA;
     [SerializeField] bool nextState;
     [SerializeField] Rules.states vState;
 
@@ -49,12 +50,12 @@ public class Director : MonoBehaviour
             nextIteration = !nextIteration;
             try
             {
-                vProxy.pasTime();
+                vDNA = vProxy.pasTime();
                 vIteretionsDone++;
             }
             catch (Exception e)
             {
-                Debug.LogError("Something goes wrong: " + e.Message);
+                Debug.LogError("Something goes wrong: " + e.Message + "\n"+ e.StackTrace);
                 return;
             }
         }
@@ -69,8 +70,10 @@ public class Director : MonoBehaviour
             }
             catch (Exception e)
             {
-                Debug.LogError("Something goes wrong: "+e.Message);
+                Debug.LogError("Something goes wrong: " + e.Message + "\n" + e.StackTrace);
             }
         }
     }
+
+
 }

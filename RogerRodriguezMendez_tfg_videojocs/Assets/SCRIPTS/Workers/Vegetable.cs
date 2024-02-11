@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 [Serializable]
 public class DNAinfo
@@ -29,7 +31,7 @@ public class Vegetable : IServiceable //es el tipus especific de contructor
     public Rules.states myState;
     public int myStateIndex;
     public  Dictionary<Rules.DNAnucleotides, DNAinfo[]> DNA;
-    public string currentDNA;
+    public string currentDNA = ((char)Rules.DNAnucleotides.NONE).ToString();
 
 
     public Vegetable() { }//es encesari per la serialitzacio de l'objecte
@@ -62,9 +64,31 @@ public class Vegetable : IServiceable //es el tipus especific de contructor
         return myState;
     }
 
-    public void pasTime()
+    public string pasTime()
     {
-       
+        StringBuilder sb = new StringBuilder();
+
+        foreach (char c in currentDNA)
+        {
+            sb.Append(DNA.ContainsKey((Rules.DNAnucleotides) c ) ? getOneDNAinfo(DNA[(Rules.DNAnucleotides)c]) : c.ToString());
+        }
+
+        currentDNA = sb.ToString();
+
+        return currentDNA;
+    }
+    private string getOneDNAinfo(DNAinfo[] DNAinfos)
+    {
+        float minProb = Random.Range(1, 10);
+        foreach (DNAinfo DNAinfo in DNAinfos)
+        {
+            if (DNAinfo.probability >= minProb)
+            {
+                return DNAinfo.info;
+            }
+
+        }
+        return DNAinfos[0].info;
     }
 
 

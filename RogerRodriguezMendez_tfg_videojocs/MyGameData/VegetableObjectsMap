@@ -30,7 +30,7 @@
         }
       ]
     },
-    "currentDNA": null
+    "currentDNA": "N"
   },
   "EAGGPLANT": {
     "name": "Eaggplant",
@@ -46,25 +46,17 @@
     "DNA": {
       "NONE": [
         {
-          "info": "G[+N]",
-          "probability": 5.0
-        },
-        {
-          "info": "G[-N]",
+          "info": "G+[[N]-N]-G[-GN]+N",
           "probability": 10.0
         }
       ],
       "GROW": [
-        {
-          "info": "G",
-          "probability": 5.0
-        },
         {
           "info": "GG",
           "probability": 10.0
         }
       ]
     },
-    "currentDNA": null
+    "currentDNA": "N"
   }
 }

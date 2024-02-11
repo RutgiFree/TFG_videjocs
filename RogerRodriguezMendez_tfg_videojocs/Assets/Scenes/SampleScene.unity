@@ -210,7 +210,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 8.662945
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -234,7 +234,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 0, y: 8.1, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -275,7 +275,10 @@ MonoBehaviour:
   - CARROT
   - EAGGPLANT
   load: 1
-  vName: CARROT
+  vName: EAGGPLANT
+  nextIteration: 1
+  vIteretionsDone: 0
+  vDNA: 
   nextState: 0
   vState: 0
 --- !u!114 &598784884
@@ -291,7 +294,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   vName: 
-  vState: 0
+  activeDNA: 
+  lineLengh: 0
+  angle: 0
+  branch: {fileID: 8797205633955492616, guid: 7618ddde89884d742bd2d9f07abbec5c, type: 3}
 --- !u!4 &598784885
 Transform:
   m_ObjectHideFlags: 0
@@ -300,7 +306,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 598784882}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -4, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

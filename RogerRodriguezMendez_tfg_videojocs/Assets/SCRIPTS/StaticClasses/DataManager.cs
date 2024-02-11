@@ -53,19 +53,17 @@ public class DataManager
             //eaggplant
             myDNA = new Dictionary<Rules.DNAnucleotides, DNAinfo[]>
             {
-                {
+                {//G+[[N]-N]-F[-GN]+N //G[+N][-N]
                     Rules.DNAnucleotides.NONE,
                     new DNAinfo[]
                     {
-                        new DNAinfo("G[+N]", 5),
-                        new DNAinfo("G[-N]", 10)
+                        new DNAinfo("G+[[N]-N]-G[-GN]+N", 10)
                     }
                 },
                 {
                     Rules.DNAnucleotides.GROW,
                     new DNAinfo[]
                     {
-                        new DNAinfo("G", 5),
                         new DNAinfo("GG", 10)
                     }
                 }
