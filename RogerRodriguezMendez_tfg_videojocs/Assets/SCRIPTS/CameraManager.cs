@@ -5,7 +5,6 @@ using UnityEngine;
 public class CameraManager : MonoBehaviour
 {
     Camera myCamera;
-    Collider myCollider;
     float inicialCameraSize;
     Vector3 inicialPosition, inicialPositionCollider;
     int speed;
@@ -15,12 +14,10 @@ public class CameraManager : MonoBehaviour
     void Awake()
     {
         myCamera = GetComponent<Camera>();
-        myCollider = GetComponent<Collider>();
         inicialCameraSize = myCamera.orthographicSize;
         inicialPosition = myCamera.transform.position;
-        inicialPositionCollider = myCollider.transform.position;
         growCamera = false;
-        speed = 20;
+        speed = 50;
         timer = 0;
     }
 
@@ -30,10 +27,10 @@ public class CameraManager : MonoBehaviour
 
         if (growCamera)
         {
-            myCamera.orthographicSize = Mathf.Lerp(myCamera.orthographicSize, inicialCameraSize + speed, Time.deltaTime);
-            myCamera.transform.position = Vector3.Lerp(myCamera.transform.position, inicialPosition + Vector3.up * speed, Time.deltaTime);
-            myCamera.transform.localScale = Vector3.Lerp(myCamera.transform.localScale, Vector3.one + (Vector3.left + Vector3.up) * speed, Time.deltaTime);
-            //myCollider.transform.position = Vector3.Lerp(myCollider.transform.position, inicialPositionCollider + Vector3.up * speed, Time.deltaTime);
+            myCamera.orthographicSize = myCamera.orthographicSize + (speed * Time.deltaTime);
+            myCamera.transform.position = myCamera.transform.position + (Vector3.up * speed * Time.deltaTime);
+            myCamera.transform.localScale = myCamera.transform.localScale + ((Vector3.right + Vector3.up) * 5 * Time.deltaTime);
+
             if (timer > 0) timer -= Time.deltaTime;
             else { 
                 timer = 0;
@@ -56,7 +53,6 @@ public class CameraManager : MonoBehaviour
         myCamera.orthographicSize = inicialCameraSize;
         myCamera.transform.position = inicialPosition;
         myCamera.transform.localScale =  Vector3.one;
-        //myCollider.transform.position = inicialPositionCollider;
         growCamera = false;
         timer = 0;
         Debug.Log("RESET");

@@ -146,6 +146,8 @@ public class VegetableProxy : MonoBehaviour
 
                     segment.GetComponent<LineRenderer>().SetPosition(0, inicialPosition);//posicio inicial
                     segment.GetComponent<LineRenderer>().SetPosition(1, spawner.transform.position);//posicio final
+                    segment.GetComponent<BoxCollider>().center = segment.transform.InverseTransformPoint(spawner.transform.position); //posem el colider al final de la branca
+
 
                     //si tornem aqui vol dir que sera més llarg
                     currentPlusLengh++;
