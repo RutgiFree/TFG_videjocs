@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1044689002940544775}
   - component: {fileID: 3231334306416379086}
+  - component: {fileID: 751054875664321269}
   m_Layer: 0
   m_Name: branch
   m_TagString: Untagged
@@ -131,3 +132,16 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
+--- !u!65 &751054875664321269
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8797205633955492616}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.1, y: 1.1, z: 1.1}
+  m_Center: {x: -0.091850735, y: 2.8346395, z: -0.018375527}

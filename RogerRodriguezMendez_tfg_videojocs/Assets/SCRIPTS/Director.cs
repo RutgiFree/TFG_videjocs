@@ -5,14 +5,10 @@ using UnityEngine;
  [RequireComponent(typeof(VegetableProxy))]
 public class Director : MonoBehaviour
 {//vegetable sistem? com a nom
-    VegetableProxy vProxy;
-    [SerializeField] string[] vegetablesName = DataManager.vegetablesNames;
-    [SerializeField] bool load;
+    [SerializeField] VegetableProxy vProxy;
     [SerializeField] string vName;
-    [SerializeField] bool nextIteration;
     [SerializeField] int vIteretionsDone;
     [SerializeField] string vDNA;
-    [SerializeField] bool nextState;
     [SerializeField] Rules.states vState;
 
 
@@ -21,59 +17,44 @@ public class Director : MonoBehaviour
         vProxy = GetComponent<VegetableProxy>();
     }
 
-
-    void Update()
+    public bool setVegetable(string _vName)
     {
-        if (load)
+        try
         {
-            load = !load;
-            if (vName.Equals(""))
-            {
-                vName = "WRITE HERE ¬¬";
-                return;
-            }
-            try
-            {
-                vProxy.setVegetable(DataManager.getVegetable(vName));
-                vState = vProxy.vState;
-            }
-            catch (Exception)
-            {
-                vName = "NOT FOUND :(";
-                return;
-            }
-            vName = "FOUND :)";
+            vProxy.setVegetable(DataManager.getVegetable(_vName));
+            vState = vProxy.vState;
         }
-
-        if (nextIteration)
+        catch (Exception)
         {
-            nextIteration = !nextIteration;
-            try
-            {
-                vDNA = vProxy.pasTime();
-                vIteretionsDone++;
-            }
-            catch (Exception e)
-            {
-                Debug.LogError("Something goes wrong: " + e.Message + "\n"+ e.StackTrace);
-                return;
-            }
+            return false;
         }
+        return true;
+    }
 
-        if (nextState)
+    public int pasTime()
+    {
+        try
         {
-            nextState = !nextState;
-            try
-            {
-                vState = vProxy.nextState();
-                if( vState == Rules.states.DEATH) Destroy(this.gameObject);
-            }
-            catch (Exception e)
-            {
-                Debug.LogError("Something goes wrong: " + e.Message + "\n" + e.StackTrace);
-            }
+            vDNA = vProxy.pasTime();
+            return ++vIteretionsDone;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("Something goes wrong: " + e.Message + "\n" + e.StackTrace);
+            return -1;
         }
     }
 
-
+    public void changeState()
+    {
+        try
+        {
+            vState = vProxy.nextState();
+            if (vState == Rules.states.DEATH) Destroy(this.gameObject);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("Something goes wrong: " + e.Message + "\n" + e.StackTrace);
+        }
+    }
 }

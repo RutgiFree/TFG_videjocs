@@ -29,8 +29,7 @@
           "probability": 10.0
         }
       ]
-    },
-    "currentDNA": "N"
+    }
   },
   "EAGGPLANT": {
     "name": "Eaggplant",
@@ -56,7 +55,6 @@
           "probability": 10.0
         }
       ]
-    },
-    "currentDNA": "N"
+    }
   }
 }
