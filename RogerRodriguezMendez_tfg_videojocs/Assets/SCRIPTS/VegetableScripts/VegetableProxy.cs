@@ -25,7 +25,6 @@ public class VegetableProxy : MonoBehaviour
         public vNode parent;
     }
 
-    //patro representant? -> patro proxy o patro decorator?
     Vegetable myVegetable;
     [SerializeField] string vName;
     [SerializeField] public Rules.states vState { get; private set; }
@@ -50,18 +49,13 @@ public class VegetableProxy : MonoBehaviour
     void Awake()
     {
         activeDNA = ((char)Rules.DNAnucleotides.NONE).ToString();
-        canGrow = false;
         lineLengh = 1f;
         currentPlusLengh = 0;
         angle = 25f;
 
-
         currentNode = null;
         parentsStack = new Stack<vNode>();
-    }
 
-    void Start()
-    {
         spawner = new GameObject("spawner");
         spawner.transform.position = transform.position;
         spawner.transform.parent = transform;
@@ -79,41 +73,36 @@ public class VegetableProxy : MonoBehaviour
         parentsStack.Push(parentNode);
     }
 
-    void Update()
+    void startGrow()
     {
-        if (canGrow)
+        spawner.transform.position = parentNode.vSegment.transform.position;
+        spawner.transform.rotation = parentNode.vSegment.transform.rotation;
+        
+        //recetegem tot, mirem si el pare te fills del seguent segment (mai te del seu propi)
+        currentNode = parentNode.newSegmentChild;
+        if(currentNode == null)//no tenim cap hortalisa creada, anem a iniciar-la
         {
-            canGrow = !canGrow;
+            GameObject segment = Instantiate(branch);
+            segment.transform.position = parentNode.vSegment.transform.position;
+            segment.transform.rotation = parentNode.vSegment.transform.rotation;
+            segment.transform.parent = parentsStack.Peek().vSegment.transform;
 
-            spawner.transform.position = parentNode.vSegment.transform.position;
-            spawner.transform.rotation = parentNode.vSegment.transform.rotation;
-
-            //recetegem tot, mirem si el pare te fills del seguent segment (mai te del seu propi)
-            currentNode = parentNode.newSegmentChild;
-
-            if(currentNode == null)//no tenim cap hortalisa creada, anem a iniciar-la
+            currentNode = new vNode
             {
-                GameObject segment = Instantiate(branch);
-                segment.transform.position = parentNode.vSegment.transform.position;
-                segment.transform.rotation = parentNode.vSegment.transform.rotation;
-                segment.transform.parent = parentsStack.Peek().vSegment.transform;
+                vSegment = segment,
+                segmentID = parentNode.segmentID+1,
+                spawnerCheckPoints = new Stack<SpawnerCheckPoint>(),
+                parent = parentNode,
+            };
 
-                currentNode = new vNode
-                {
-                    vSegment = segment,
-                    segmentID = parentNode.segmentID+1,
-                    spawnerCheckPoints = new Stack<SpawnerCheckPoint>(),
-                    parent = parentNode,
-                };
-                segment.name = currentNode.segmentID+".1";
-                parentNode.newSegmentChild = currentNode;
-                parentsStack.Push(currentNode);
-            }
-
-            currentSegmentID = currentNode.segmentID;
-            currentPlusLengh = 0;
-            growVegetable(activeDNA);
+            segment.name = currentNode.segmentID+".1";
+            parentNode.newSegmentChild = currentNode;
+            parentsStack.Push(currentNode);
         }
+
+        currentSegmentID = currentNode.segmentID;
+        currentPlusLengh = 0;
+        growVegetable(activeDNA);
     }
 
     void growVegetable(string _activeDNA)
@@ -274,7 +263,7 @@ public class VegetableProxy : MonoBehaviour
     {
         if (myVegetable == null) throw new System.NotImplementedException();
         activeDNA = myVegetable.pasTime(activeDNA);
-        canGrow = true;
+        startGrow();
         return activeDNA;
     }
 
