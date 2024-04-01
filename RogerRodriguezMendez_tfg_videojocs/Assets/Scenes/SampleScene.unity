@@ -1706,7 +1706,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   generate: 1
+  rotate: 0
   WorldY: 2
+  degreeAdd: 15
 --- !u!23 &1617760987
 MeshRenderer:
   m_ObjectHideFlags: 0
