@@ -7,38 +7,120 @@ using System;
 public class MeshGenerator : MonoBehaviour
 {
     public class MeshNode {
-        int lenght;
-        int sectionLenght;
+        public class SectionsController
+        {
+            public string rules;
+            public Mesh mesh;
+            public int sectionIndex;
+            public bool sectionEnded;
+        }
 
-        MeshGenerator meshG;
+        float sectionDegree;
+        Vector3 startPoint;
+        Mesh sectionMesh;
+        SectionsController sectionsController;
+
+        Spawner spawner;
 
         MeshNode diferentSectionNode;
+        MeshNode sameSectionNode;
 
 
-        Mesh newMesh;
-
-        public MeshNode(int _lenght, MeshGenerator _meshG)
+        public MeshNode(Vector3 _startPoint, Spawner _spawner, int sectionIndex)
         {
-            lenght = _lenght;
-            sectionLenght = 1;
-            meshG = _meshG;
+            sectionDegree = 0;
+            spawner = _spawner;
+            startPoint = _startPoint;
+
+            sectionsController = new SectionsController();
+            sectionsController.mesh = new Mesh();
+            sectionsController.sectionIndex = sectionIndex;
+            sectionsController.sectionEnded = false;
+
+            sectionMesh = new Mesh();
+
         }
 
-        public Mesh goDiferentSameSection(Mesh oldMesh) {
-            //primer generem la nova mesh en referencia al vell
+        public SectionsController startGeneration(string rules)
+        {
+            sectionsController.rules = rules;
+            Mesh generalMesh = null;
+            
+            var myUnSeenRules = rules;
 
-            if (oldMesh == null) newMesh = meshG.myGenerarMeshNode(sectionLenght);
-            else newMesh = meshG.myUpdateMeshNode(oldMesh, sectionLenght);
+            foreach (char c in myUnSeenRules)
+            {
+                if (!spawner.translateStandartRules(c, sectionMesh))
+                {
+                    if ((Rules.DNAnucleotides)c == Rules.DNAnucleotides.START_BRANCH)
+                    {
+                        string difSectionRules = myUnSeenRules.Split('[', 2)[1];
 
-            if (lenght - (sectionLenght) <= 0) return newMesh;//hem arribat al final
+                        startPoint = spawner.getPositionCenter();
+                        sectionDegree = spawner.getRotation();
 
-            diferentSectionNode = new MeshNode(lenght - 1, meshG);
+                        var auxiliar = goDifSection(difSectionRules);
+                        generalMesh = spawner.UnifyMeshes(sectionMesh, auxiliar.mesh);
 
-            return diferentSectionNode.goDiferentSameSection(newMesh);
+                        spawner.addPositionAndDegree(startPoint, sectionDegree);
+                        string sameSectionRules = auxiliar.rules;
+
+                        //despres de la diferent hi ha mes coses?
+                        if (sameSectionRules.Length == 0)
+                        {
+                            //no hi ha res mes a fer, marxem
+                            sectionsController.mesh = generalMesh;
+                            sectionsController.rules = "";
+                            sectionsController.sectionEnded = true;
+                            Debug.Log("all ended!: " + sectionsController.sectionIndex);
+                            return sectionsController;
+                        }
+
+                        auxiliar = goSameSection(sameSectionRules);
+                        generalMesh = spawner.UnifyMeshes(generalMesh, auxiliar.mesh);
+
+                        if (auxiliar.sectionEnded && auxiliar.sectionIndex == sectionsController.sectionIndex)
+                        {
+                            //en la meva seccio he trobat un final, per tant, retornem el que tenim
+                            sectionsController.mesh = generalMesh;
+                            sectionsController.rules = auxiliar.rules;
+                            sectionsController.sectionEnded = true;
+                            Debug.Log("Section ended!: " + sectionsController.sectionIndex);
+                            return sectionsController;
+                        }
+
+                        myUnSeenRules = auxiliar.rules;
+                        break;
+
+                    }
+                    if ((Rules.DNAnucleotides)c == Rules.DNAnucleotides.END_BRANCH)
+                    {
+                        sectionsController.mesh = sectionMesh;
+                        sectionsController.rules = myUnSeenRules.Split(']', 2)[1];
+                        sectionsController.sectionEnded = true;
+                        Debug.Log("Section ended?: " + sectionsController.sectionIndex);
+                        return sectionsController;
+                    }
+                }
+            }
+            sectionsController.mesh = generalMesh ?? sectionMesh;
+            sectionsController.rules = "";
+            spawner.addPositionAndDegree(startPoint, sectionDegree);
+            return sectionsController;
         }
 
-
-
+        SectionsController goDifSection(string rules)
+        {
+            Debug.Log("GO DIF [:" + rules);
+            if (diferentSectionNode == null) diferentSectionNode = new MeshNode(spawner.getPositionCenter(), spawner, sectionsController.sectionIndex+1);
+            return diferentSectionNode.startGeneration(rules);
+        }
+        SectionsController goSameSection(string rules)
+        {
+            Debug.Log("GO SAME ]:" + rules);
+            if (sameSectionNode == null) sameSectionNode = new MeshNode(spawner.getPositionCenter(), spawner, sectionsController.sectionIndex);
+            return sameSectionNode.startGeneration(rules);
+        }
     }
 
     public class Spawner
@@ -64,7 +146,10 @@ public class MeshGenerator : MonoBehaviour
             growCenter.transform.localPosition = (Vector3.up);
         }
 
-        public void addPosition(Vector3 newPosition, float newDegree)
+        public Vector3 getPositionCenter() { return center.transform.localPosition; }
+        public float getRotation() { return center.transform.rotation.eulerAngles.z; }
+
+        public void addPositionAndDegree(Vector3 newPosition, float newDegree)
         {
             center.transform.localPosition = newPosition;
             center.transform.rotation = Quaternion.AngleAxis(newDegree, Vector3.forward);
@@ -74,6 +159,34 @@ public class MeshGenerator : MonoBehaviour
         public void rotate(float addDegree)
         {
             center.transform.rotation = Quaternion.AngleAxis(center.transform.rotation.eulerAngles.z + addDegree, Vector3.forward);
+        }
+
+        public Mesh UnifyMeshes(Mesh mesh1, Mesh mesh2)
+        {
+            // Create a new mesh
+            Mesh unifiedMesh = new Mesh();
+
+            // Combine vertices
+            List<Vector3> vertices = new List<Vector3>(mesh1.vertices);
+            vertices.AddRange(mesh2.vertices);
+
+            // Combine triangles
+            List<int> triangles = new List<int>(mesh1.triangles);
+            // Adjust triangle indices for mesh2
+            int vertexOffset = mesh1.vertices.Length;
+            for (int i = 0; i < mesh2.triangles.Length; i++)
+            {
+                triangles.Add(mesh2.triangles[i] + vertexOffset);
+            }
+
+            // Assign combined vertices and triangles to the new mesh
+            unifiedMesh.vertices = vertices.ToArray();
+            unifiedMesh.triangles = triangles.ToArray();
+
+            // Recalculate normals
+            unifiedMesh.RecalculateNormals();
+
+            return unifiedMesh;
         }
 
         public Mesh grow(int lenghtY, Mesh mesh)
@@ -149,11 +262,34 @@ public class MeshGenerator : MonoBehaviour
             return mesh;
 
         }
+
+        public bool translateStandartRules(char value, Mesh mesh)
+        {
+            switch ((Rules.DNAnucleotides)value)
+            {
+                case Rules.DNAnucleotides.GROW:
+                    //creix la mesh acutal
+                    grow(1, mesh);
+                    break;
+                case Rules.DNAnucleotides.POSITIVE_ROTATION:
+                    //rotem en +
+                    rotate(25);
+                    break;
+                case Rules.DNAnucleotides.NEGATIVE_ROTATION:
+                    //rotem en -
+                    rotate(-25);
+                    break;
+                case Rules.DNAnucleotides.NONE:
+                    //no fem res
+                    break;
+                default: return false;
+            }
+            return true;
+        }
     }
 
-    [SerializeField] bool generate, rotate;
+    [SerializeField] bool generate;
 
-    [SerializeField] int WorldY = 1, degreeAdd = 0;
     Mesh mesh;
     GameObject spanwer;
 
@@ -175,17 +311,18 @@ public class MeshGenerator : MonoBehaviour
      *Per tant un quadrat te una estructura de 6 vertexs:
      *    0,1,2   1,3,2
      */
-
+    MeshNode meshNode;
+    string rules;
     void Start()
     {
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
-        //spanwer = new GameObject("spanwer");
-        //spanwer.transform.parent = transform;
-        //spanwer.transform.position = transform.localPosition;
-        //myGenerarMesh(WorldY);
 
         GOspwaner = new Spawner(transform.gameObject);
+        GOspwaner.addPositionAndDegree(Vector3.zero, transform.localEulerAngles.z);
+
+        rules = "G+[[N]-N]-G[-GN]+N";
+        meshNode = new MeshNode(GOspwaner.getPositionCenter(), GOspwaner, 0);
     }
 
     public Mesh myGenerarMeshNode(int numbY)
@@ -229,7 +366,7 @@ public class MeshGenerator : MonoBehaviour
         return nodeMesh;
     }
 
-    public Mesh growMesh(Mesh oldMesh, int growY)//¡? tinc son
+    public Mesh growMesh(Mesh oldMesh, int growY)
     {
         int[] myTriangles = new int[growY * 6];
         Vector3[] myVertexs = new Vector3[(2) * (growY + 1)];
@@ -330,82 +467,7 @@ public class MeshGenerator : MonoBehaviour
         oldMesh.RecalculateNormals();
         return oldMesh;
     }
-    /*
-    public void myGenerarMesh(int numbY)
-    {
-        int[] myTriangles = new int[ numbY * 6];
-        Vector3[] myVertexs = new Vector3[(2) * (numbY + 1)];
 
-        int i = 0;
-        for (int y = 0; y <= numbY; y++)
-        {
-            //es quade en ordre ascendent cap a Y, per tant,
-            //priumer guardem el V3 dels V 0 i 2, despres els 1 i 3, etc
-            myVertexs[i++] = new Vector3(-0.5f, y, 0);
-            myVertexs[i++] = new Vector3(0.5f, y, 0);
-        }
-
-        int mesT = 0;
-        int vIndex = 0;
-
-        for (int y = 0; y < numbY; y++)
-        {
-            //estem ficant l'index d'on es trove el vector que volem
-            myTriangles[mesT + 0] = vIndex + 0;
-            myTriangles[mesT + 1] = vIndex + 2;
-            myTriangles[mesT + 2] = vIndex + 1;
-
-            myTriangles[mesT + 3] = vIndex + 1;
-            myTriangles[mesT + 4] = vIndex + 2;
-            myTriangles[mesT + 5] = vIndex + 3;
-
-            mesT += 6;
-            vIndex+=2;
-        }
-
-        mesh.Clear();
-        mesh.vertices = myVertexs;
-        mesh.triangles = myTriangles;
-
-        mesh.RecalculateNormals();
-    }
-
-    public void myUpdateMesh(Vector3[] actualV, int[] actualT, int numbY)
-    {
-
-        int[] newTriangles = new int[ numbY * 6];
-        Vector3[] newVertexs = new Vector3[2 * numbY];
-
-        float baseY = actualV[actualV.Length - 1].y;
-        int i = 0;
-        for (float y = 1; y <= numbY ; y++)
-        {
-            newVertexs[i++] = new Vector3(-0.5f, y + baseY, 0);
-            newVertexs[i++] = new Vector3(0.5f, y + baseY, 0);
-        }
-
-        int mesT = 0;
-        int vIndex = (actualT.Length / 6) * 2;
-
-        for (int y = 0; y < numbY; y++)
-        {
-            newTriangles[mesT + 0] = vIndex + 0;
-            newTriangles[mesT + 1] = vIndex + 2;
-            newTriangles[mesT + 2] = vIndex + 1;
-
-            newTriangles[mesT + 3] = vIndex + 1;
-            newTriangles[mesT + 4] = vIndex + 2;
-            newTriangles[mesT + 5] = vIndex + 3;
-            mesT += 6; 
-            vIndex +=2;
-        }
-
-        mesh.vertices = mesh.vertices.Concat(newVertexs).ToArray();
-        mesh.triangles = mesh.triangles.Concat(newTriangles).ToArray();
-
-        mesh.RecalculateNormals();
-    }
-    */
     void Update()
     {
         try
@@ -413,24 +475,14 @@ public class MeshGenerator : MonoBehaviour
             if (generate)
             {
                 generate = !generate;
-                //myUpdateMesh(mesh.vertices, mesh.triangles, WorldY);
 
-                //spanwer.transform.position = transform.localPosition;
-                //MeshNode node = new MeshNode(WorldY, this);
-                //Mesh newMesh = node.goDiferentSameSection(null);
+                meshNode = new MeshNode(GOspwaner.getPositionCenter(), GOspwaner, 0);
 
-                //mesh.Clear();
-                //mesh.vertices = newMesh.vertices;
-                //mesh.triangles = newMesh.triangles;
+                GetComponent<MeshFilter>().mesh = meshNode.startGeneration(rules).mesh;
+                GOspwaner.addPositionAndDegree(Vector3.zero, transform.localEulerAngles.z);
+                rules = rules.Replace("G", "GG");
+                rules = rules.Replace("N", "G+[[N]-N]-G[-GN]+N");
 
-                mesh = GOspwaner.grow(WorldY, mesh);
-            }
-            if (rotate)
-            {
-                rotate = !rotate;
-                GOspwaner.rotate(degreeAdd);
-
-                //mesh = GOspwaner.grow(WorldY, mesh);
             }
         }
         catch(Exception e)
@@ -438,54 +490,4 @@ public class MeshGenerator : MonoBehaviour
             Debug.LogError("Something goes wrong: " + e.Message + "\n" + e.StackTrace);
         }
     }
-
-
-    /*
-    void generarMesh()
-    {
-        triangles = new int[WorldX * WorldY * 6];
-        vertexs = new Vector3[(WorldX + 1) * (WorldY + 1)];
-
-        int i = 0;
-        for (int y = 0; y <= WorldY; y++)
-        {
-            for (int x = 0; x <= WorldX; x++)
-            {
-                vertexs[i] = new Vector3(x, y, 0);
-                i++;
-            }
-        }
-
-        int mesT = 0;
-        int mesV = 0;
-
-        for (int y = 0; y < WorldY; y++)
-        {
-            for (int x = 0; x < WorldX; x++)
-            {
-                triangles[mesT + 0] = mesV + 0;
-                triangles[mesT + 1] = mesV + WorldX + 1;
-                triangles[mesT + 2] = mesV + 1;
-
-                triangles[mesT + 3] = mesV + 1;
-                triangles[mesT + 4] = mesV + WorldX + 1;
-                triangles[mesT + 5] = mesV + WorldX + 2;
-                
-                mesV ++; //es per augmentar la base sobre on es fica el vertex
-                mesT += 6; //cada quadrat te 6 vertex, que equival a 6 linie
-
-            }
-            mesV++; 
-        }
-    }
-
-    void actualitzarMesh()
-    {
-        mesh.Clear();
-        mesh.vertices = vertexs;
-        mesh.triangles = triangles;
-
-        mesh.RecalculateNormals();
-    }
-    */
 }
