@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class canvasManager : MonoBehaviour
 {
     [SerializeField] GameObject vDirector;
+    [SerializeField] GameObject spawnPoint;
     [SerializeField] TMP_Text title;
     [SerializeField] TMP_Dropdown dropdown;
     [SerializeField] Button pasTimeButton;
@@ -47,7 +48,7 @@ public class canvasManager : MonoBehaviour
     private void resetDirector()
     {
         Destroy(director);
-        director = Instantiate(vDirector, new Vector3(0, 0, 0), new Quaternion());
+        director = Instantiate(vDirector, spawnPoint.transform.position, spawnPoint.transform.rotation);
         directorScript = director.GetComponent<Director>();
         directorScript.setVegetable(DataManager.vegetablesNames[dropdown.value]);
         title.text = "Iteracions: " + directorScript.pasTime();

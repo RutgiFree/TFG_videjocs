@@ -72,7 +72,6 @@ public class MeshGenerator : MonoBehaviour
                             sectionsController.mesh = generalMesh;
                             sectionsController.rules = "";
                             sectionsController.sectionEnded = true;
-                            Debug.Log("all ended!: " + sectionsController.sectionIndex);
                             return sectionsController;
                         }
 
@@ -85,7 +84,6 @@ public class MeshGenerator : MonoBehaviour
                             sectionsController.mesh = generalMesh;
                             sectionsController.rules = auxiliar.rules;
                             sectionsController.sectionEnded = true;
-                            Debug.Log("Section ended!: " + sectionsController.sectionIndex);
                             return sectionsController;
                         }
 
@@ -98,7 +96,6 @@ public class MeshGenerator : MonoBehaviour
                         sectionsController.mesh = sectionMesh;
                         sectionsController.rules = myUnSeenRules.Split(']', 2)[1];
                         sectionsController.sectionEnded = true;
-                        Debug.Log("Section ended?: " + sectionsController.sectionIndex);
                         return sectionsController;
                     }
                 }
@@ -111,13 +108,11 @@ public class MeshGenerator : MonoBehaviour
 
         SectionsController goDifSection(string rules)
         {
-            Debug.Log("GO DIF [:" + rules);
             if (diferentSectionNode == null) diferentSectionNode = new MeshNode(spawner.getPositionCenter(), spawner, sectionsController.sectionIndex+1);
             return diferentSectionNode.startGeneration(rules);
         }
         SectionsController goSameSection(string rules)
         {
-            Debug.Log("GO SAME ]:" + rules);
             if (sameSectionNode == null) sameSectionNode = new MeshNode(spawner.getPositionCenter(), spawner, sectionsController.sectionIndex);
             return sameSectionNode.startGeneration(rules);
         }
@@ -126,12 +121,14 @@ public class MeshGenerator : MonoBehaviour
     public class Spawner
     {
         GameObject parent, center, growCenter, left, right;
+        MeshFilter meshFilterRecipient;
         public Spawner(GameObject _parent)
         {
             parent = _parent;
             center = new GameObject("center-spawner");
             center.transform.parent = _parent.transform;
             center.transform.position = _parent.transform.localPosition;
+            meshFilterRecipient = center.AddComponent<MeshFilter>();
 
             left = new GameObject("left-spawner");
             left.transform.parent = center.transform;
@@ -149,14 +146,13 @@ public class MeshGenerator : MonoBehaviour
         public Vector3 getPositionCenter() { return center.transform.localPosition; }
         public float getRotation() { return center.transform.rotation.eulerAngles.z; }
 
-        public void addPositionAndDegree(Vector3 newPosition, float newDegree)
+        public void addPositionAndDegree(Vector3 newPosition, float newDegree)//TODO: set no add
         {
             center.transform.localPosition = newPosition;
             center.transform.rotation = Quaternion.AngleAxis(newDegree, Vector3.forward);
-
         }
         
-        public void rotate(float addDegree)
+        public void rotate(float addDegree)//TODO: set
         {
             center.transform.rotation = Quaternion.AngleAxis(center.transform.rotation.eulerAngles.z + addDegree, Vector3.forward);
         }
@@ -189,9 +185,28 @@ public class MeshGenerator : MonoBehaviour
             return unifiedMesh;
         }
 
+        public Mesh addMeshToPosition(Mesh mesh, Vector3 bottomPosMesh, float angleMesh, Vector3 finalPos, float finalAngle)
+        {
+            //checkpoit del spawner
+            Vector3 spanwerPos = center.transform.localPosition;
+            float spawnerAngle = center.transform.localEulerAngles.z;
+
+            center.transform.localPosition = bottomPosMesh;
+            center.transform.rotation = Quaternion.AngleAxis(angleMesh, Vector3.forward);
+
+            meshFilterRecipient.mesh = mesh;
+
+            center.transform.localPosition = finalPos;
+            center.transform.rotation = Quaternion.AngleAxis(finalAngle, Vector3.forward);
+
+            //recetegem el spawner on era i com estave
+            //meshFilterRecipient.mesh = new Mesh();
+            //addPositionAndDegree(spanwerPos, spawnerAngle);
+            return null;
+        }
+
         public Mesh grow(int lenghtY, Mesh mesh)
         {
-            var debuger = "";
             int yExtra = 0;
             //estem generant de 0 o ja tenim mesh generada?
             if (mesh.vertexCount != 0)
@@ -217,9 +232,7 @@ public class MeshGenerator : MonoBehaviour
                 right.transform.parent = parent.transform;
 
                 newVertices[i++] = left.transform.localPosition;
-                debuger += newVertices[i-1] + ", ";
                 newVertices[i++] = right.transform.localPosition;
-                debuger += newVertices[i-1] + ", ";
 
 
                 left.transform.parent = center.transform;
@@ -234,8 +247,6 @@ public class MeshGenerator : MonoBehaviour
                     growCenter.transform.localPosition = Vector3.up;
                 }
             }
-            Debug.Log(debuger);
-            debuger = "";
 
 
             int vIndex = (mesh.triangles.Length / 6) * 2;
@@ -290,7 +301,6 @@ public class MeshGenerator : MonoBehaviour
 
     [SerializeField] bool generate;
 
-    Mesh mesh;
     GameObject spanwer;
 
     Spawner GOspwaner;
@@ -315,9 +325,6 @@ public class MeshGenerator : MonoBehaviour
     string rules;
     void Start()
     {
-        mesh = new Mesh();
-        GetComponent<MeshFilter>().mesh = mesh;
-
         GOspwaner = new Spawner(transform.gameObject);
         GOspwaner.addPositionAndDegree(Vector3.zero, transform.localEulerAngles.z);
 
@@ -482,7 +489,7 @@ public class MeshGenerator : MonoBehaviour
                 GOspwaner.addPositionAndDegree(Vector3.zero, transform.localEulerAngles.z);
                 rules = rules.Replace("G", "GG");
                 rules = rules.Replace("N", "G+[[N]-N]-G[-GN]+N");
-
+                //GOspwaner.addMeshToPosition(GetComponent<MeshFilter>().mesh, Vector3.zero, transform.localEulerAngles.z, (Vector3.right + Vector3.up), 45);
             }
         }
         catch(Exception e)

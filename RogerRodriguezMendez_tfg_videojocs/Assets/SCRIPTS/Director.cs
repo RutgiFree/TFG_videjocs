@@ -2,10 +2,10 @@ using System;
 using System.Linq;
 using UnityEngine;
 
- [RequireComponent(typeof(VegetableProxy))]
+ [RequireComponent(typeof(VegetableProxyMesh))]
 public class Director : MonoBehaviour
 {//vegetable sistem? com a nom
-    [SerializeField] VegetableProxy vProxy;
+    [SerializeField] VegetableProxyMesh vProxy;
     [SerializeField] string vName;
     [SerializeField] int vIteretionsDone;
     [SerializeField] string vDNA;
@@ -14,7 +14,7 @@ public class Director : MonoBehaviour
 
     void Start()
     {
-        vProxy = GetComponent<VegetableProxy>();
+        vProxy = GetComponent<VegetableProxyMesh>();
     }
 
     public bool setVegetable(string _vName)
