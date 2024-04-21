@@ -56,5 +56,31 @@
         }
       ]
     }
+  },
+  "CACATUA": {
+    "name": "Cacatua",
+    "myStates": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "myState": 1,
+    "myStateIndex": 0,
+    "DNA": {
+      "NONE": [
+        {
+          "info": "GG[++GG][--GG]GG",
+          "probability": 10.0
+        }
+      ],
+      "GROW": [
+        {
+          "info": "GG",
+          "probability": 10.0
+        }
+      ]
+    }
   }
 }

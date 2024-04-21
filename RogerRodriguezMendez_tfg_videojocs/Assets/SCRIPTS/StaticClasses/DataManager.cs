@@ -43,10 +43,10 @@ public class DataManager
             };
 
 
-            Vegetable veg = 
+            Vegetable veg =
                 new Vegetable(
-                        "Carrot", 
-                        new Rules.states[] { Rules.states.GERMINATION, Rules.states.GROWING, Rules.states.DYING }, 
+                        "Carrot",
+                        new Rules.states[] { Rules.states.GERMINATION, Rules.states.GROWING, Rules.states.DYING },
                         0, myDNA);
             auxData.Add(veg.name.ToUpper(), veg);
 
@@ -68,10 +68,35 @@ public class DataManager
                     }
                 }
             };
-            veg = 
+            veg =
                 new Vegetable(
-                        "Eaggplant", 
-                        new Rules.states[] { Rules.states.GERMINATION, Rules.states.GROWING, Rules.states.FLOWERING, Rules.states.RIPENING, Rules.states.DYING }, 
+                        "Eaggplant",
+                        new Rules.states[] { Rules.states.GERMINATION, Rules.states.GROWING, Rules.states.FLOWERING, Rules.states.RIPENING, Rules.states.DYING },
+                        0, myDNA);
+            auxData.Add(veg.name.ToUpper(), veg);
+
+            //cacatua
+            myDNA = new Dictionary<Rules.DNAnucleotides, DNAinfo[]>
+            {
+                {//G+[[N]-N]-F[-GN]+N //G[+N][-N]
+                    Rules.DNAnucleotides.NONE,
+                    new DNAinfo[]
+                    {
+                        new DNAinfo("GG[++GG][--GG]GG", 10)
+                    }
+                },
+                {
+                    Rules.DNAnucleotides.GROW,
+                    new DNAinfo[]
+                    {
+                        new DNAinfo("GG", 10)
+                    }
+                }
+            };
+            veg =
+                new Vegetable(
+                        "Cacatua",
+                        new Rules.states[] { Rules.states.GERMINATION, Rules.states.GROWING, Rules.states.FLOWERING, Rules.states.RIPENING, Rules.states.DYING },
                         0, myDNA);
             auxData.Add(veg.name.ToUpper(), veg);
 
