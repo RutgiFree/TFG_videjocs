@@ -82,7 +82,7 @@ public class DataManager
                     Rules.DNAnucleotides.NONE,
                     new DNAinfo[]
                     {
-                        new DNAinfo("GG[++GG][--GG]GG", 10)
+                        new DNAinfo("G[++G][--G]G", 10)
                     }
                 },
                 {

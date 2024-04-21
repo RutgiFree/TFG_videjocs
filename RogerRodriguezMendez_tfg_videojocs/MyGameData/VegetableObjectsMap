@@ -71,7 +71,7 @@
     "DNA": {
       "NONE": [
         {
-          "info": "GG[++GG][--GG]GG",
+          "info": "G[++G][--G]G",
           "probability": 10.0
         }
       ],

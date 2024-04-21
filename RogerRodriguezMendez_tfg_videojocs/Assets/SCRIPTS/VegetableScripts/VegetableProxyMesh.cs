@@ -71,8 +71,9 @@ public class VegetableProxyMesh : MonoBehaviour
         Spawner spawner;
 
         MeshNode diferentSectionNode;//podem tenir N diferents
-        MeshNode sameSectionNode;//podem tenir N same
+        MeshNode newStartNode;//podem tenir N same
 
+        Queue<MeshNode> resetNodes;
 
         public MeshNode(Vector3 _startPoint, Spawner _spawner, int sectionIndex)
         {
@@ -81,6 +82,7 @@ public class VegetableProxyMesh : MonoBehaviour
             startPoint = _startPoint;
 
             sectionsController = new SectionsController(new MeshInfo(), sectionIndex, false);
+            resetNodes = new Queue<MeshNode>();
         }
 
         public SectionsController startGeneration(string rules)
@@ -96,29 +98,39 @@ public class VegetableProxyMesh : MonoBehaviour
                 {
                     if ((Rules.DNAnucleotides)c == Rules.DNAnucleotides.START_BRANCH)
                     {
-                        string difSectionRules = myUnSeenRules.Split('[', 2)[1];
-
                         startPoint = spawner.getPositionCenter();
                         sectionDegree = spawner.getDegree();
 
-                        var auxiliar1 = goDifSection(difSectionRules); //UnifyTreeMeshes2
-                        generalMeshInfo = spawner.UnifyMeshes(sectionsController.getMeshInfo(), auxiliar1.getMeshInfo());
+                        string resetNodeRules = myUnSeenRules;
 
-                        spawner.setPositionAndDegree(startPoint, sectionDegree);
-
-                        string sameSectionRules = auxiliar1.getRules();
-
-                        //despres de la diferent hi ha mes coses?
-                        if (sameSectionRules.Length == 0)
+                        do
                         {
-                            //no hi ha res mes a fer, marxem
-                            sectionsController.setMeshInfo(spawner.UnifyTwoMeshes(sectionsController.getMeshInfo(), auxiliar1.getMeshInfo()));
-                            sectionsController.EndSection("");
-                            return sectionsController;
-                        }
+                            resetNodeRules = resetNodeRules.Split('[', 2)[1];
 
-                        var auxiliar2 = goSameSection(sameSectionRules);
-                        generalMeshInfo = spawner.UnifyMeshes(generalMeshInfo, auxiliar2.getMeshInfo());
+
+                            var newResetNode = goResetNode(resetNodeRules);
+
+                            resetNodeRules = newResetNode.getRules();
+
+                            if(resetNodeRules.Length == 0)
+                            {
+                                var allMeshInfo1 = getAllResetsMeshInfo();
+
+                                sectionsController.setMeshInfo(spawner.UnifyMultyMeshes(sectionsController.getMeshInfo(), allMeshInfo1));
+                                sectionsController.EndSection("");
+                                return sectionsController;
+                            }
+
+                            spawner.setPositionAndDegree(startPoint, sectionDegree);
+
+                        } while ((Rules.DNAnucleotides)resetNodeRules[0] == Rules.DNAnucleotides.START_BRANCH);
+
+                        var allMeshInfo2 = getAllResetsMeshInfo();
+
+                        generalMeshInfo = spawner.UnifyMultyMeshes(sectionsController.getMeshInfo(), allMeshInfo2);
+
+                        var startNode = goNewStartNode(resetNodeRules);
+                        generalMeshInfo = spawner.UnifyMeshes(generalMeshInfo, startNode.getMeshInfo());
 
                         //tenim 3 meshes a unir. que fem?
                         //la mesh dif i same tenen informacio? si no es aixi no unim res
@@ -172,15 +184,15 @@ public class VegetableProxyMesh : MonoBehaviour
                         }
                         */
 
-                        if (auxiliar2.getEnded() && auxiliar2.getIndex() == sectionsController.getIndex())
+                        if (startNode.getEnded() && startNode.getIndex() == sectionsController.getIndex())
                         {
                             //en la meva seccio he trobat un final, per tant, retornem el que tenim
                             sectionsController.setMeshInfo(generalMeshInfo);
-                            sectionsController.EndSection(auxiliar2.getRules());
+                            sectionsController.EndSection(startNode.getRules());
                             return sectionsController;
                         }
 
-                        myUnSeenRules = auxiliar2.getRules();
+                        myUnSeenRules = startNode.getRules();
                         break;
 
                     }
@@ -192,6 +204,7 @@ public class VegetableProxyMesh : MonoBehaviour
                     }
                 }
             }
+
             //sectionsController.setRules("");
             if (generalMeshInfo.isEmpty()) sectionsController.setMeshInfo(sectionsController.getMeshInfo());
             else sectionsController.setMeshInfo(generalMeshInfo);
@@ -200,15 +213,25 @@ public class VegetableProxyMesh : MonoBehaviour
             return sectionsController;
         }
 
-        SectionsController goDifSection(string rules)
+        MeshInfo[] getAllResetsMeshInfo()
         {
-            if (diferentSectionNode == null) diferentSectionNode = new MeshNode(spawner.getPositionCenter(), spawner, sectionsController.getIndex() + 1);
-            return diferentSectionNode.startGeneration(rules);
+            List<MeshInfo> retorn = new List<MeshInfo>();
+            foreach(MeshNode mn in resetNodes)
+            {
+                retorn.Add(mn.sectionsController.getMeshInfo());
+            }
+            return retorn.ToArray();
         }
-        SectionsController goSameSection(string rules)
+
+        SectionsController goResetNode(string rules)
         {
-            if (sameSectionNode == null) sameSectionNode = new MeshNode(spawner.getPositionCenter(), spawner, sectionsController.getIndex());
-            return sameSectionNode.startGeneration(rules);
+            resetNodes.Enqueue(new MeshNode(spawner.getPositionCenter(), spawner, sectionsController.getIndex() + 1));
+            return resetNodes.Last().startGeneration(rules);
+        }
+        SectionsController goNewStartNode(string rules)
+        {
+            newStartNode = new MeshNode(spawner.getPositionCenter(), spawner, sectionsController.getIndex());
+            return newStartNode.startGeneration(rules);
         }
     }
 
@@ -265,27 +288,48 @@ public class VegetableProxyMesh : MonoBehaviour
         }
 
 
-        public MeshInfo UnifyMeshes(MeshInfo mesh1, MeshInfo mesh2)
+        public MeshInfo UnifyMeshes(MeshInfo baseM, MeshInfo mesh)
         {
             // Combine vertices (using AddRange makes the proces more eficient)
-            List<Vector3> vertices = new List<Vector3>(mesh1.getVertices());
+            List<Vector3> vertices = new List<Vector3>(baseM.getVertices());
             int vertexOffset = vertices.Count;
-            vertices.AddRange(mesh2.getVertices());
+            vertices.AddRange(mesh.getVertices());
 
             // Combine triangles
-            List<int> trianglesM1 = new List<int>(mesh1.getTriangles());
-            List<int> trianglesM2 = new List<int>(mesh2.getTriangles());
+            List<int> trianglesM1 = new List<int>(baseM.getTriangles());
+            List<int> trianglesM2 = new List<int>(mesh.getTriangles());
 
             // Adjust triangle indices for mesh2
-            for (int i = 0; i < trianglesM2.Count; i++)
-            {
-                trianglesM1.Add(trianglesM2[i] + vertexOffset);
-            }
+            foreach (int t in trianglesM2)
+                trianglesM1.Add(t + vertexOffset);
+
 
             // Assign combined vertices and triangles to the new mesh
-            MeshInfo unifiedMesh = new MeshInfo(vertices.ToArray(),trianglesM1.ToArray());            
+            return new MeshInfo(vertices.ToArray(), trianglesM1.ToArray());
+        }
 
-            return unifiedMesh;
+        public MeshInfo UnifyMultyMeshes(MeshInfo baseM, MeshInfo[] meshes)
+        {
+            List<Vector3> vertices = new List<Vector3>(baseM.getVertices());
+            List<int> triangles = new List<int>(baseM.getTriangles());
+            
+            int vertexOffset = vertices.Count();
+            List<int> trianglesM2 = new List<int>();
+
+            foreach(MeshInfo mi in meshes)
+            {
+            // Combine vertices (using AddRange makes the proces more eficient)
+                vertices.AddRange(mi.getVertices());
+                trianglesM2.AddRange(mi.getTriangles());
+
+                foreach (int t in trianglesM2)
+                    triangles.Add(t + vertexOffset);
+                
+
+                vertexOffset = vertices.Count();
+                trianglesM2.Clear();
+            }
+            return new MeshInfo(vertices.ToArray(), triangles.ToArray());
         }
 
         public MeshInfo UnifyTwoMeshes(MeshInfo mesh1, MeshInfo mesh2)
