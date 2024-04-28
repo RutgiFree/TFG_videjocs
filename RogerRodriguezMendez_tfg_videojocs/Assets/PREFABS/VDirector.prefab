@@ -99,6 +99,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   vName: 
   activeDNA: 
+  fruitsMap:
+    elements:
+    - key: Carrot
+      value:
+      - {fileID: 5618682790547192317, guid: 7a5a0c67170083244a90b43a8c190e64, type: 3}
+      - {fileID: 5618682790547192317, guid: 4632d3179b73aeb4db78862cb1640baa, type: 3}
 --- !u!114 &4549490906095987507
 MonoBehaviour:
   m_ObjectHideFlags: 0

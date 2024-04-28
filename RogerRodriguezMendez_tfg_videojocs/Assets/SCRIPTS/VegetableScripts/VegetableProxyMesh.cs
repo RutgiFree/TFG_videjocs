@@ -31,6 +31,7 @@ public class VegetableProxyMesh : MonoBehaviour
         public bool isEmpty() { return vertices.Length == 0 && triangles.Length == 0;  }
 
     }
+
     public class SectionsController
     {
         MeshInfo meshInfo;
@@ -61,6 +62,21 @@ public class VegetableProxyMesh : MonoBehaviour
         public bool getEnded() { return sectionEnded; }
     }
 
+    public class FruitsFlower
+    {
+        bool isFruit;
+        GameObject gObj;
+
+        public FruitsFlower(GameObject _gObj, bool _isFruit)
+        {
+            gObj = _gObj;
+            isFruit = _isFruit;
+        }
+
+        public bool getIsFruit() { return isFruit; }
+        public GameObject getGameObject() { return gObj; }
+    }
+
     public class MeshNode
     {
 
@@ -70,10 +86,10 @@ public class VegetableProxyMesh : MonoBehaviour
 
         Spawner spawner;
 
-        MeshNode diferentSectionNode;//podem tenir N diferents
-        MeshNode newStartNode;//podem tenir N same
-
+        MeshNode newStartNode;
         Queue<MeshNode> resetNodes;
+        Queue<FruitsFlower> fruits;
+        Queue<FruitsFlower> flowers;
 
         public MeshNode(Vector3 _startPoint, Spawner _spawner, int sectionIndex)
         {
@@ -107,82 +123,28 @@ public class VegetableProxyMesh : MonoBehaviour
                         {
                             resetNodeRules = resetNodeRules.Split('[', 2)[1];
 
-
                             var newResetNode = goResetNode(resetNodeRules);
+                            spawner.setPositionAndDegree(startPoint, sectionDegree);
 
                             resetNodeRules = newResetNode.getRules();
 
                             if(resetNodeRules.Length == 0)
                             {
                                 var allMeshInfo1 = getAllResetsMeshInfo();
-
-                                sectionsController.setMeshInfo(spawner.UnifyMultyMeshes(sectionsController.getMeshInfo(), allMeshInfo1));
+                                sectionsController.setMeshInfo(spawner.UnifyMultyMeshes2(sectionsController.getMeshInfo(), allMeshInfo1));
                                 sectionsController.EndSection("");
                                 return sectionsController;
                             }
 
-                            spawner.setPositionAndDegree(startPoint, sectionDegree);
 
                         } while ((Rules.DNAnucleotides)resetNodeRules[0] == Rules.DNAnucleotides.START_BRANCH);
 
-                        var allMeshInfo2 = getAllResetsMeshInfo();
-
-                        generalMeshInfo = spawner.UnifyMultyMeshes(sectionsController.getMeshInfo(), allMeshInfo2);
-
+                        var allMeshInfo2 = new List<MeshInfo>(getAllResetsMeshInfo());
                         var startNode = goNewStartNode(resetNodeRules);
-                        generalMeshInfo = spawner.UnifyMeshes(generalMeshInfo, startNode.getMeshInfo());
 
-                        //tenim 3 meshes a unir. que fem?
-                        //la mesh dif i same tenen informacio? si no es aixi no unim res
-                        //la mesh dif te informacio i la mesh same no? o a la inversa? unim la base amb la que te informacio
+                        allMeshInfo2.Add(startNode.getMeshInfo());
 
-                        //les dues tenen informacio? unim les 3 meshes, pero quina es dreta? i quina es esquerra?
-
-                        /*
-                        if (!auxiliar1.getMeshInfo().isEmpty() && !auxiliar2.getMeshInfo().isEmpty())
-                        {
-                            Debug.Log("2 meshes!");
-                            if (auxiliar1.getMeshInfo().angle > 0 && auxiliar2.getMeshInfo().angle <= 0)
-                            {
-                                Debug.Log("1r!: " + (auxiliar1.getMeshInfo().angle) + ", " + (auxiliar2.getMeshInfo().angle));
-                                generalMeshInfo = spawner.UnifyTreeMeshes(sectionsController.getMeshInfo(), auxiliar1.getMeshInfo(), auxiliar2.getMeshInfo());
-                            }
-                            else if (auxiliar2.getMeshInfo().angle > 0 && auxiliar1.getMeshInfo().angle <= 0)
-                            {
-                                Debug.Log("2n!: " + (auxiliar1.getMeshInfo().angle) + ", " + (auxiliar2.getMeshInfo().angle));
-                                generalMeshInfo = spawner.UnifyTreeMeshes(sectionsController.getMeshInfo(), auxiliar2.getMeshInfo(), auxiliar1.getMeshInfo());
-                            }
-                            else if (auxiliar1.getMeshInfo().angle >= 0 && auxiliar2.getMeshInfo().angle >= 0 || auxiliar1.getMeshInfo().angle <= 0 && auxiliar2.getMeshInfo().angle <= 0)
-                            {
-                                var dif = Math.Abs(auxiliar1.getMeshInfo().angle) - Math.Abs(auxiliar2.getMeshInfo().angle);
-                                if (dif > 0)
-                                {
-                                    Debug.Log("3r!: " + (auxiliar1.getMeshInfo().angle) + ", " + (auxiliar2.getMeshInfo().angle));
-                                    generalMeshInfo = spawner.UnifyTreeMeshes(sectionsController.getMeshInfo(), auxiliar1.getMeshInfo(), auxiliar2.getMeshInfo());
-                                }
-                                else if (dif < 0)
-                                {
-                                    Debug.Log("4rt!: " + (auxiliar1.getMeshInfo().angle) + ", " + (auxiliar2.getMeshInfo().angle));
-                                    generalMeshInfo = spawner.UnifyTreeMeshes(sectionsController.getMeshInfo(), auxiliar2.getMeshInfo(), auxiliar1.getMeshInfo());
-                                }
-                                else
-                                {
-                                    Debug.Log("5e!: "+(auxiliar1.getMeshInfo().angle) +", "+(auxiliar2.getMeshInfo().angle));
-                                    generalMeshInfo = spawner.UnifyMeshes(spawner.UnifyMeshes(sectionsController.getMeshInfo(), auxiliar1.getMeshInfo()), auxiliar2.getMeshInfo());
-                                }
-                            }
-                        }
-                        else if (!auxiliar1.getMeshInfo().isEmpty())
-                        {
-                            Debug.Log("DIF mesh!: "+auxiliar1.getRules());
-                            generalMeshInfo = spawner.UnifyTwoMeshes(sectionsController.getMeshInfo(), auxiliar1.getMeshInfo());
-                        }
-                        else if(!auxiliar2.getMeshInfo().isEmpty())
-                        {
-                            Debug.Log("SAME mesh!" + auxiliar2.getRules());
-                            generalMeshInfo = spawner.UnifyTwoMeshes(sectionsController.getMeshInfo(), auxiliar2.getMeshInfo());
-                        }
-                        */
+                        generalMeshInfo = spawner.UnifyMultyMeshes2(sectionsController.getMeshInfo(), allMeshInfo2.ToArray());
 
                         if (startNode.getEnded() && startNode.getIndex() == sectionsController.getIndex())
                         {
@@ -201,6 +163,11 @@ public class VegetableProxyMesh : MonoBehaviour
                         sectionsController.setMeshInfo(sectionsController.getMeshInfo());
                         sectionsController.EndSection(myUnSeenRules.Split(']', 2)[1]);
                         return sectionsController;
+                    }
+                    if((Rules.DNAnucleotides)c == Rules.DNAnucleotides.FRUIT)
+                    {
+                        GameObject fruit = spawner.createGO();
+                        fruit.name = "fruit";
                     }
                 }
             }
@@ -238,7 +205,9 @@ public class VegetableProxyMesh : MonoBehaviour
     public class Spawner
     {
         GameObject parent, center, growCenter, left, right;
-        MeshFilter meshFilterRecipient;
+
+        List<GameObject> fruitsVariants;
+
         float initialDegree;
         public Spawner(GameObject _parent)
         {
@@ -247,20 +216,21 @@ public class VegetableProxyMesh : MonoBehaviour
             center.transform.parent = _parent.transform;
             center.transform.position = _parent.transform.localPosition;
             initialDegree = _parent.transform.eulerAngles.z;
-            meshFilterRecipient = center.AddComponent<MeshFilter>();
 
             left = new GameObject("left-spawner");
             left.transform.parent = center.transform;
-            left.transform.localPosition = (Vector3.left * 0.5f);
+            left.transform.localPosition = (Vector3.left * 0.25f);
 
             right = new GameObject("right-spawner");
             right.transform.parent = center.transform;
-            right.transform.localPosition = (Vector3.right * 0.5f);
+            right.transform.localPosition = (Vector3.right * 0.25f);
 
             growCenter = new GameObject("growCenter-spawner");
             growCenter.transform.parent = center.transform;
             growCenter.transform.localPosition = (Vector3.up);
         }
+
+        public void setFruitsVariants(List<GameObject> _fruitsVariants) { fruitsVariants = _fruitsVariants; }
 
         public Vector3 getPositionCenter() { return center.transform.localPosition; }
         public float getDegree()
@@ -277,8 +247,8 @@ public class VegetableProxyMesh : MonoBehaviour
         {
             center.transform.localPosition = Vector3.zero;
             center.transform.rotation = Quaternion.AngleAxis(initialDegree, Vector3.forward);
-            left.transform.localPosition = (Vector3.left * 0.5f);
-            right.transform.localPosition = (Vector3.right * 0.5f);
+            left.transform.localPosition = (Vector3.left * 0.25f);
+            right.transform.localPosition = (Vector3.right * 0.25f);
             growCenter.transform.localPosition = (Vector3.up);
         }
 
@@ -287,218 +257,195 @@ public class VegetableProxyMesh : MonoBehaviour
             center.transform.rotation = Quaternion.AngleAxis(center.transform.rotation.eulerAngles.z + addDegree, Vector3.forward);
         }
 
-
-        public MeshInfo UnifyMeshes(MeshInfo baseM, MeshInfo mesh)
+        public MeshInfo UnifyMultyMeshes2(MeshInfo baseM, MeshInfo[] meshes)
         {
-            // Combine vertices (using AddRange makes the proces more eficient)
+            //eliminem les meshes sense informacio, i si encara hi han coses seguim, sino retornem la base
+            var aux = meshes.Where(mesh => !mesh.isEmpty()).ToArray();
+            if (aux.Length == 0) return baseM;
+
+            else meshes = aux;
+
+            //ordenem de mes gran a mes petit respecte l'angle (o el que es el amteix, d'esquerra a dreta)
+            Array.Sort(meshes, (a, b) => b.angle.CompareTo(a.angle));
+
+            //agafo i preparo la base
             List<Vector3> vertices = new List<Vector3>(baseM.getVertices());
-            int vertexOffset = vertices.Count;
-            vertices.AddRange(mesh.getVertices());
+            List<int> triangles = new List<int>(baseM.getTriangles());
 
-            // Combine triangles
-            List<int> trianglesM1 = new List<int>(baseM.getTriangles());
-            List<int> trianglesM2 = new List<int>(mesh.getTriangles());
+            //pero, la base es empty?
+            if (vertices.Count() == 0)
+            {
+                //tenim que crea una base sobre la qual es treballe, on aquesta base seran 2 vertex
+                vertices.Add(left.transform.localPosition);
+                vertices.Add(right.transform.localPosition);
+            }
 
-            // Adjust triangle indices for mesh2
-            foreach (int t in trianglesM2)
-                trianglesM1.Add(t + vertexOffset);
+            int vertexOffset = vertices.Count();
+            List<int> trianglesM2 = new List<int>();
+            List<Vector3> verticesM2 = new List<Vector3>();
+
+            //ara els tenim ordenar per el seu grau, aixi que, anirem de esquerra a dreta.
+            //també savem el numero / llarga dels que s'uniran
+            //hem de mirar si els afegits a la base son >= 2, sino es el cas, es fa una unio simple
+
+            //es una unió Complexa?
+            if (meshes.Length >= 2)
+            {
+                //savem que el primer de la llista es l'element de l'esquerra i que l'ultim es el de la dreta.
+                //anirem de dreta a esquerra, pero avans volem dividr la llista en 2, a fi de fer la part esquerra i la part dreta
+                //per tant, es necari saver quin es punt del mig:
+
+                List<Vector3> oldMidPointV = new List<Vector3>();
+                List<int> oldMidPointT = new List<int>();
+                List<int> totalMidPoint = new List<int>();
+                int vertexBaseOffset = vertices.Count();
+
+                //quin es el centre?
+                int midIndex = meshes.Length / 2;
+
+                //si tenim length 2 => el de la meitat es 0 (cas especial)
+                //si tenim length 3 => el de la meitat es 1, pero caldrà tranformarlo en index, per tant, 1-1 = 0
+                //si tenim length 4 => el de la meitat es 2, pero caldrà tranformarlo en index, per tant, 2-1 = 1
+                //si tenim length 6 => el de la meitat es 3, pero caldrà tranformarlo en index, per tant, 3-1 = 2
+                //...
+
+                //NO es un cas especial?
+                if (midIndex != 0) midIndex--;
+
+                int index = 0;
+                foreach (MeshInfo mesh in meshes)
+                {
+                    //preparem les variables
+                    trianglesM2.Clear();
+                    verticesM2.Clear();
+                    trianglesM2.AddRange(mesh.getTriangles());
+                    verticesM2.AddRange(mesh.getVertices());
+
+                    //eliminem els nostres primers 2 vertex que subtituirem pels 2 ultims de la base
+                    verticesM2.RemoveAt(0);
+                    verticesM2.RemoveAt(0);
+
+                    //elimino els 3 primer triangles
+                    trianglesM2.RemoveAt(0);
+                    trianglesM2.RemoveAt(0);
+                    trianglesM2.RemoveAt(0);
+
+                    //si ens troivem mes enlla del centre la base offset pase a ser -1
+                    if (index <= midIndex && trianglesM2[0] != vertexBaseOffset - 2)
+                        trianglesM2[0] = vertexBaseOffset - 2; //agafem el penultim vertex de la base en la que ens volem unir (esquerra)
+                    else if(index > midIndex && trianglesM2[0] != vertexBaseOffset - 1)
+                    {
+                        trianglesM2[0] = vertexBaseOffset - 1; //agafem l'enultim vertex de la base en la que ens volem unir (dreta)
+                        totalMidPoint.Add(oldMidPointT[0]); //guardem el punt considerat el centre total de la unio
+                    }
+
+                    triangles.Add(trianglesM2[0]);
+
+                    //no tenim vell punt entremig?
+                    if (oldMidPointV.Count() == 0)
+                    {
+                        //aixi doncs estem a la esquerra del tot
+                        trianglesM2[1] = trianglesM2[1] + vertexOffset - 2; //manteim el nostre pero en referencia a la base (offset) => el -2 es pk hem eliminat 2 vertexs
+                    }
+                    else
+                    {   //agafem el vell punt intermig
+                        verticesM2[trianglesM2[1] - 2] = oldMidPointV[0];
+                        trianglesM2[1] = oldMidPointT[0];
+                    }
+
+                    triangles.Add(trianglesM2[1]);
 
 
-            // Assign combined vertices and triangles to the new mesh
-            return new MeshInfo(vertices.ToArray(), trianglesM1.ToArray());
+                    //tenim algu a la nostras dreta?
+                    if (index + 1 < meshes.Length)
+                    {
+                        //agafem el entremig entre jo i el de la dreta
+                        verticesM2[trianglesM2[2] - 2] = Vector3.Lerp(verticesM2[trianglesM2[2] - 2], meshes[index + 1].getVertices()[2], 0.5f);
+                    }
+
+                    oldMidPointV.Clear();
+                    oldMidPointV.Add(verticesM2[trianglesM2[2] - 2]);//guardem el futur bell punt intermig
+
+                    oldMidPointT.Clear();
+                    oldMidPointT.Add(trianglesM2[2] + vertexOffset - 2);//guardem l'index d'on es trove el futur bell punt intermig
+
+                    trianglesM2[2] = trianglesM2[2] + vertexOffset - 2; //manteim el nostre pero en referencia a la base (offset) => el -2 es pk hem eliminat 2 vertexs
+                    triangles.Add(trianglesM2[2]);
+
+                    vertices.AddRange(verticesM2);
+                    for (int i = 3; i < trianglesM2.Count; i++)
+                        triangles.Add(trianglesM2[i] + vertexOffset - 2);
+
+                    vertexOffset = vertices.Count();
+
+                    index++;
+                }
+
+                //ara cal omplir aquest triangle "buit" que hi ha entre els elements esquerres i els drets
+                //necesitem quin es el punt considerant mig (el vertex)
+                //despres encesitem els 2 vertex de la base
+
+                //aixi doncs, i seguin l'ordre en el que es fiquen els triangles, farem:
+                triangles.Add(vertexBaseOffset - 2);
+                triangles.Add(totalMidPoint[0]);
+                triangles.Add(vertexBaseOffset - 1);
+            }
+            else if(meshes.Length  == 1) //es una unió simple
+            {
+                //preparem les variables
+                trianglesM2.AddRange(meshes[0].getTriangles());
+                verticesM2.AddRange(meshes[0].getVertices());
+
+                //eliminem els nostres primers 2 vertex que subtituirem pels 2 ultims de la base
+                verticesM2.RemoveAt(0);
+                verticesM2.RemoveAt(0);
+
+                trianglesM2[0] = vertexOffset - 2; //agafem el penultim vertex de la base en la que ens volem unir
+                triangles.Add(trianglesM2[0]);
+
+                trianglesM2[1] = trianglesM2[1] + vertexOffset - 2; //manteim el nostre pero en referencia a la base (offset) => el -2 es pk hem eliminat 2 vertexs
+                triangles.Add(trianglesM2[1]);
+
+                trianglesM2[2] = vertexOffset - 1;//agafem l'ultim vertex de la base en la que ens volem unir
+                triangles.Add(trianglesM2[2]);
+
+                trianglesM2[3] = trianglesM2[2];//agafem l'ultim vertex de la base en la que ens volem unir
+                triangles.Add(trianglesM2[3]);
+
+
+                vertices.AddRange(verticesM2);
+                for (int i = 4; i < trianglesM2.Count; i++)
+                    triangles.Add(trianglesM2[i] + vertexOffset -2);
+                
+            }
+
+            
+            return new MeshInfo(vertices.ToArray(), triangles.ToArray());
         }
 
         public MeshInfo UnifyMultyMeshes(MeshInfo baseM, MeshInfo[] meshes)
         {
             List<Vector3> vertices = new List<Vector3>(baseM.getVertices());
             List<int> triangles = new List<int>(baseM.getTriangles());
-            
+
             int vertexOffset = vertices.Count();
             List<int> trianglesM2 = new List<int>();
 
-            foreach(MeshInfo mi in meshes)
+            foreach (MeshInfo mi in meshes)
             {
-            // Combine vertices (using AddRange makes the proces more eficient)
+                // Combine vertices (using AddRange makes the proces more eficient)
                 vertices.AddRange(mi.getVertices());
                 trianglesM2.AddRange(mi.getTriangles());
 
                 foreach (int t in trianglesM2)
                     triangles.Add(t + vertexOffset);
-                
+
 
                 vertexOffset = vertices.Count();
                 trianglesM2.Clear();
             }
             return new MeshInfo(vertices.ToArray(), triangles.ToArray());
         }
-
-        public MeshInfo UnifyTwoMeshes(MeshInfo mesh1, MeshInfo mesh2)
-        {
-            List<int> trianglesM1 = new List<int>(mesh1.getTriangles());
-            List<int> trianglesM2 = new List<int>(mesh2.getTriangles());
-
-            List<Vector3> vertices = new List<Vector3>(mesh1.getVertices());
-            int vertexOffset = vertices.Count();
-
-            List<Vector3> verticesM2 = new List<Vector3>(mesh2.getVertices());
-            bool doMerge = verticesM2.Count() >= 2;
-
-            if (doMerge)
-            {
-                verticesM2.RemoveAt(0);
-                verticesM2.RemoveAt(0);
-
-                trianglesM2[0] = vertices.Count() - 2; 
-                trianglesM1.Add(trianglesM2[0]);
-
-                trianglesM2[1] = trianglesM2[1] + vertexOffset - 2;
-                trianglesM1.Add(trianglesM2[1]);
-
-                trianglesM2[2] = vertices.Count() - 1; 
-                trianglesM1.Add(trianglesM2[2]);
-            }
-
-            vertices.AddRange(verticesM2);
-
-            for (int i = doMerge? 3 : 0; i < trianglesM2.Count; i++)
-            {
-                if (doMerge)
-                {
-                    trianglesM1.Add(trianglesM2[i] + vertexOffset - 2);
-                }
-                else trianglesM1.Add(trianglesM2[i] + vertexOffset);
-            }
-
-            MeshInfo unifiedMesh = new MeshInfo(vertices.ToArray(), trianglesM1.ToArray());
-
-            return unifiedMesh;
-        }
-        public MeshInfo UnifyTreeMeshes(MeshInfo bMesh, MeshInfo lMesh, MeshInfo rMesh)
-        {
-            if (bMesh.getVertices().Length < 2 || lMesh.getVertices().Length < 2 || rMesh.getVertices().Length < 2) return UnifyMeshes(UnifyMeshes(bMesh, lMesh), rMesh);
-            StringBuilder sb = new StringBuilder();
-
-            List<Vector3> verticesMb = new List<Vector3>(bMesh.getVertices());
-            List<Vector3> verticesMl = new List<Vector3>(lMesh.getVertices());
-            List<Vector3> verticesMr = new List<Vector3>(rMesh.getVertices());
-            List<Vector3> unifiedVertices = new List<Vector3>(bMesh.getVertices());
-
-            List<int> trianglesMb = new List<int>(bMesh.getTriangles());
-            List<int> trianglesMl = new List<int>(lMesh.getTriangles());
-            List<int> trianglesMr = new List<int>(rMesh.getTriangles());
-            List<int> unifiedTriangles = new List<int>(bMesh.getTriangles());
-
-            int vertexOffset = verticesMb.Count();
-
-            //primer unium la lMesh a la bMesh, per tant, eliminem els 2 primers vertecs
-            //canviant-los per els 2 ultims vertes de la bMesh
-
-            //eliminem els e primers vertexs
-            verticesMl.RemoveAt(0);
-            verticesMl.RemoveAt(0);
-
-            Debug.Log("1r UNIFICACIO!!");
-            Debug.Log("ABANS Ml vertex -> " + trianglesMl[0] + ", " + trianglesMl[1] + ", " + trianglesMl[2] + ", " + trianglesMl[3]);
-
-            sb.Append("TRIANGLES Mb ABANS: ");
-            trianglesMb.ForEach(t => sb.Append(t+", "));
-            Debug.Log(sb.ToString());
-            sb.Clear();
-
-            //mofiquem el primer triangle del lMesh
-            trianglesMl[0] = verticesMb.Count() - 2; //agafem l'index del penultum vertex de bMesh
-            unifiedTriangles.Add(trianglesMl[0]);
-
-            trianglesMl[1] = trianglesMl[1] + vertexOffset - 2; //manteim l'index d'aquest vertex pero en referencia a la base. (-2) => puix hem eliminat 2 vertex
-            unifiedTriangles.Add(trianglesMl[1]);
-
-            trianglesMl[2] = verticesMb.Count() - 1; //agafem l'index de l'ultim vertex de bMesh
-            unifiedTriangles.Add(trianglesMl[2]);
-
-            //modifiquem l'inici del segon triangle
-            trianglesMl[3] = trianglesMl[2]; //agafem l'index de l'ultim vertex de bMesh
-            unifiedTriangles.Add(trianglesMl[3]);
-
-            Debug.Log("DESPRES Ml vertex -> " + trianglesMl[0] + ", " + trianglesMl[1] + ", " + trianglesMl[2] + ", " + trianglesMl[3]);
-
-
-            //modifiquem els index de la restra de triangles, en referencia a la base
-            for (int i = 4; i < trianglesMl.Count(); i++)
-                unifiedTriangles.Add(trianglesMl[i] + vertexOffset - 2); //manteim l'index del vertex pero en referencia a la base. (-2) => puix hem eliminat 2 vertex
-
-            sb.Append("TRIANGLES UNIFICATS DESPRES: ");
-            unifiedTriangles.ForEach(t => sb.Append(t + ", "));
-            Debug.Log(sb.ToString());
-            sb.Clear();
-
-            unifiedVertices.AddRange(verticesMl);
-
-            vertexOffset = unifiedVertices.Count();
-
-            //ara unifiquem la rMesh al conjunt. Aixi doncs, eliminarem el primer triangle i
-            //modificarem els 2 primer vertes del segon triangle en referencia a la bMesh i lMesh.
-
-            //eliminem els primers vertexs
-            verticesMr.RemoveAt(0);
-            verticesMr.RemoveAt(0);
-            verticesMr.RemoveAt(0);
-
-
-            Debug.Log("2n UNIFICACIO!!");
-            Debug.Log(" -> " + trianglesMr[0] + ", " + trianglesMr[1] + ", " + trianglesMr[2]);
-            //eliminem el primer triangle
-            trianglesMr.RemoveAt(0);
-            trianglesMr.RemoveAt(0);
-            trianglesMr.RemoveAt(0);
-
-            //mofiquem el segon triangle respecte a la bMesh, pel primer vertex,
-            // i respecte a la lMesh, pel segon vertex.
-
-            Debug.Log("ABANS Mr vertex -> " + trianglesMr[0] + ", " + trianglesMr[1] + ", " + trianglesMr[2] + ", " + trianglesMr[3]);
-
-            sb.Append("TRIANGLES Mb ABANS: ");
-            trianglesMb.ForEach(t => sb.Append(t + ", "));
-            Debug.Log(sb.ToString());
-            sb.Clear();
-
-            sb.Append("TRIANGLES Ml ABANS: ");
-            trianglesMl.ForEach(t => sb.Append(t + ", "));
-            Debug.Log(sb.ToString());
-            sb.Clear();
-
-            trianglesMr[0] = verticesMb.Count() - 1; //agafem l'index de l'ultim vertex de bMesh
-            unifiedTriangles.Add(trianglesMr[0]);
-            
-
-            trianglesMr[1] = trianglesMl[5] + verticesMb.Count() - 2; //agafem l'index de l'ultim vertex de lMesh en el 2n triangle. (-2) => puix hem eliminat 2 vertex en Ml
-            unifiedTriangles.Add(trianglesMr[1]);
-
-            trianglesMr[2] = trianglesMr[2] + vertexOffset - 3; //manteim l'index d'aquest vertex pero en referencia a la base. (-1) => puix hem eliminat 2 vertex
-            unifiedTriangles.Add(trianglesMr[2]);
-
-            //modifiquem el meu propi per unirlo al del Ml
-            trianglesMr[3] = trianglesMr[1];
-            unifiedTriangles.Add(trianglesMr[3]);
-
-            Debug.Log("DESPRES Mr vertex -> " + trianglesMr[0] + ", " + trianglesMr[1] + ", " + trianglesMr[2] + ", " + trianglesMr[3]);
-
-
-            //modifiquem els index de la restra de triangles, en referencia a la base
-            for (int i = 4; i < trianglesMr.Count(); i++)
-                unifiedTriangles.Add(trianglesMr[i] + vertexOffset - 3); //manteim l'index del vertex pero en referencia a la base. (-3) => puix hem eliminat 2 vertex
-
-            sb.Append("TRIANGLES UNIFICATS DESPRES: ");
-            unifiedTriangles.ForEach(t => sb.Append(t + ", "));
-            Debug.Log(sb.ToString());
-            sb.Clear();
-
-            unifiedVertices.AddRange(verticesMr);
-
-            MeshInfo unifiedMesh = new MeshInfo(unifiedVertices.ToArray(), unifiedTriangles.ToArray());
-
-            return unifiedMesh;
-        }
-
 
         public MeshInfo grow(int lenghtY, MeshInfo meshInfo)
         {
@@ -575,6 +522,14 @@ public class VegetableProxyMesh : MonoBehaviour
             return meshInfo;
         }
 
+        public GameObject createGO()
+        {
+            GameObject gObj = new GameObject();
+            gObj.transform.parent = parent.transform;
+            gObj.transform.localPosition = center.transform.localPosition;
+            return gObj;
+        }
+
         public bool translateStandartRules(char value, MeshInfo meshInfo)
         {
             switch ((Rules.DNAnucleotides)value)
@@ -593,8 +548,9 @@ public class VegetableProxyMesh : MonoBehaviour
                     setRotation(-25);
                     meshInfo.angle -= 25;
                     break;
-                case Rules.DNAnucleotides.NONE:
-                    //no fem res
+                case Rules.DNAnucleotides.NONE | Rules.DNAnucleotides.INCREMENT_ROTATION:
+                    //no fem res -> NONE
+                    //no fem res, en algun moment a futur s'incremenmtara la rotacio base-> Rules.DNAnucleotides.INCREMENT_ROTATION
                     break;
                 default: return false;
             }
@@ -606,6 +562,12 @@ public class VegetableProxyMesh : MonoBehaviour
     [SerializeField] string vName;
     [SerializeField] public Rules.states vState { get; private set; }
     [SerializeField] string activeDNA;
+
+    [SerializeField]
+    UnityGObjMap fruitsMap;
+
+    Dictionary<string, GameObject[]> fruitsVariants;
+ 
 
     Spawner GOspwaner;
     MeshNode meshNode;
@@ -637,6 +599,8 @@ public class VegetableProxyMesh : MonoBehaviour
 
         activeDNA = ((char)Rules.DNAnucleotides.NONE).ToString();
         vegetableMesh = new Mesh();
+
+        fruitsVariants = fruitsMap.toDictionary();
     }
 
 
@@ -646,6 +610,18 @@ public class VegetableProxyMesh : MonoBehaviour
         myVegetable = vegetable;
         vName = myVegetable.name;
         vState = myVegetable.myState;
+
+        GameObject[] fruits;
+        if (fruitsVariants.TryGetValue(vName.ToLower(), out fruits))
+        {
+            Debug.Log("TENMIM"+fruits.Length);
+        }
+        else
+        {
+
+            Debug.Log("NO TENMIM");
+        }
+
     }
 
     public void getFruit()
@@ -679,4 +655,30 @@ public class VegetableProxyMesh : MonoBehaviour
 
 
 
+}
+[Serializable]
+public class UnityGObjMap
+{
+    [SerializeField]
+    UnityGObjMapElements[] elements;
+
+    public Dictionary<string, GameObject[]> toDictionary()
+    {
+
+        Dictionary<string, GameObject[]> dictionary = new Dictionary<string, GameObject[]>();
+
+        foreach(UnityGObjMapElements element in elements)
+            dictionary.Add(element.key, element.value);
+
+        return dictionary;
+    }
+}
+
+[Serializable]
+public class UnityGObjMapElements
+{
+    [SerializeField]
+    public string key;
+    [SerializeField]
+    public GameObject[] value;
 }

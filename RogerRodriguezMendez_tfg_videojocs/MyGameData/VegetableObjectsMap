@@ -11,21 +11,35 @@
     "DNA": {
       "NONE": [
         {
-          "info": "G[+N]G",
-          "probability": 5.0
-        },
-        {
-          "info": "G[-N]G",
+          "info": "X[RG]",
           "probability": 10.0
         }
       ],
       "GROW": [
         {
           "info": "G",
-          "probability": 5.0
+          "probability": 1.0
         },
         {
           "info": "GG",
+          "probability": 5.0
+        },
+        {
+          "info": "GGG",
+          "probability": 10.0
+        }
+      ],
+      "INCREMENT_ROTATION": [
+        {
+          "info": "-R",
+          "probability": 1.0
+        },
+        {
+          "info": "+R",
+          "probability": 5.0
+        },
+        {
+          "info": "R",
           "probability": 10.0
         }
       ]
@@ -71,7 +85,7 @@
     "DNA": {
       "NONE": [
         {
-          "info": "G[++G][--G]G",
+          "info": "G[++G][--G]G[--G]G[++G]G[----G][++G][-G][+G][--G][++++G]",
           "probability": 10.0
         }
       ],

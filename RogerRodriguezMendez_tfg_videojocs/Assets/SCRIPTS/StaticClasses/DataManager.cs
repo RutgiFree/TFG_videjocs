@@ -13,6 +13,11 @@ public class DataManager
     private static Dictionary<string, Vegetable> vegetablesMemory;
     public static string[] vegetablesNames { get; private set; }
 
+    //bugs detectats:
+    //si algun dels "no base" son buits, peta: (solucionat) -> treiem de la llista d'elements a unirse aquells que son buits
+    //si s'incie amb [ sense una abse feta peta: (solucionat) -> creem unma base de 2 vertex a partir del Left i Right del spawner (no mg)
+    //si s'inicie amb [ i despres va un [ sene haber c reat res peta;
+
     static DataManager()
     {
 
@@ -26,18 +31,27 @@ public class DataManager
             {
                 { 
                     Rules.DNAnucleotides.NONE, 
-                    new DNAinfo[] 
-                    { 
-                        new DNAinfo("G[+N]G", 5), 
-                        new DNAinfo("G[-N]G", 10) 
+                    new DNAinfo[]
+                    {
+                        new DNAinfo("X[RG]", 10)
                     }
                 },
                 {
                     Rules.DNAnucleotides.GROW,
                     new DNAinfo[]
                     {
-                        new DNAinfo("G", 5),
-                        new DNAinfo("GG", 10)
+                        new DNAinfo("G", 1),
+                        new DNAinfo("GG", 5),
+                        new DNAinfo("GGG", 10)
+                    }
+                },
+                {
+                    Rules.DNAnucleotides.INCREMENT_ROTATION,
+                    new DNAinfo[]
+                    {
+                        new DNAinfo("-R", 1),
+                        new DNAinfo("+R", 5),
+                        new DNAinfo("R", 10)
                     }
                 }
             };
@@ -82,7 +96,7 @@ public class DataManager
                     Rules.DNAnucleotides.NONE,
                     new DNAinfo[]
                     {
-                        new DNAinfo("G[++G][--G]G", 10)
+                        new DNAinfo("G[++G][--G]G[--G]G[++G]G[----G][++G][-G][+G][--G][++++G]", 10)
                     }
                 },
                 {
