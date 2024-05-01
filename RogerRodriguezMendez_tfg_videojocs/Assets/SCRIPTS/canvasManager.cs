@@ -47,7 +47,9 @@ public class canvasManager : MonoBehaviour
 
     private void resetDirector()
     {
-        Destroy(director);
+        if (director)
+            director.GetComponent<Director>().deleteAll();
+
         director = Instantiate(vDirector, spawnPoint.transform.position, spawnPoint.transform.rotation);
         directorScript = director.GetComponent<Director>();
         directorScript.setVegetable(DataManager.vegetablesNames[dropdown.value]);

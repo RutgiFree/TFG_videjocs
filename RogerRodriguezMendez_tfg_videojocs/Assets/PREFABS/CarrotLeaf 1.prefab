@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &4549490906095987506
+--- !u!1 &117581170808422173
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,48 +8,47 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4549490906095987509}
-  - component: {fileID: 4323087789783365238}
-  - component: {fileID: 4992061573064443367}
-  - component: {fileID: 4856424641363350846}
-  - component: {fileID: 4549490906095987507}
+  - component: {fileID: 7879368382019098976}
+  - component: {fileID: 8414728677398749492}
+  - component: {fileID: 380019466413419041}
+  - component: {fileID: 4304356855575482115}
   m_Layer: 0
-  m_Name: VDirector
+  m_Name: Leaf
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4549490906095987509
+--- !u!4 &7879368382019098976
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4549490906095987506}
+  m_GameObject: {fileID: 117581170808422173}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalScale: {x: 0.5, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 5760531100848708106}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &4323087789783365238
+--- !u!33 &8414728677398749492
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4549490906095987506}
-  m_Mesh: {fileID: 0}
---- !u!23 &4992061573064443367
+  m_GameObject: {fileID: 117581170808422173}
+  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &380019466413419041
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4549490906095987506}
+  m_GameObject: {fileID: 117581170808422173}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -63,7 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 15303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: a7e81fdc99c057d4491ae6eec768d201, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -85,46 +84,49 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &4856424641363350846
-MonoBehaviour:
+--- !u!64 &4304356855575482115
+MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4549490906095987506}
+  m_GameObject: {fileID: 117581170808422173}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f2b9cd0bd2059f447b6d3294889ffdcf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  vName: 
-  activeDNA: 
-  fruitsMap:
-    elements:
-    - key: carrot
-      value:
-      - {fileID: 5618682790547192317, guid: 7a5a0c67170083244a90b43a8c190e64, type: 3}
-      - {fileID: 5618682790547192317, guid: 4632d3179b73aeb4db78862cb1640baa, type: 3}
-  leafsMap:
-    elements:
-    - key: carrot
-      value:
-      - {fileID: 5662727328928595423, guid: 29050106300a2e54a815807d14acd9df, type: 3}
-      - {fileID: 5662727328928595423, guid: c2a500907a1a8254d8b59a0d99ffef47, type: 3}
---- !u!114 &4549490906095987507
-MonoBehaviour:
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &5662727328928595423
+GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4549490906095987506}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2c24ed7652ea84547bd65026c3ed123a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  vProxy: {fileID: 4856424641363350846}
-  vName: 
-  vIteretionsDone: 0
-  vDNA: 
-  vState: 0
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5760531100848708106}
+  m_Layer: 0
+  m_Name: CarrotLeaf 1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5760531100848708106
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5662727328928595423}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.835, y: 1.004, z: 5.6031404}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7879368382019098976}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

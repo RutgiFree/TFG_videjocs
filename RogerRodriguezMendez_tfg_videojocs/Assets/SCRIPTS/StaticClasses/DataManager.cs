@@ -29,31 +29,78 @@ public class DataManager
             //carrot
             Dictionary<Rules.DNAnucleotides, DNAinfo[]> myDNA = new Dictionary<Rules.DNAnucleotides, DNAinfo[]>
             {
-                { 
-                    Rules.DNAnucleotides.NONE, 
+                {
+                    Rules.DNAnucleotides.NONE,
                     new DNAinfo[]
                     {
-                        new DNAinfo("X[RG]", 10)
+                        new DNAinfo("D1[+G[---Z][+++Z]XL][+++K][----K][++++++K][-K]", 5),
+                        new DNAinfo("D1[G[---Z][+++Z]XL][+++++K][-----K][++K][---K]", 10)
                     }
                 },
                 {
                     Rules.DNAnucleotides.GROW,
                     new DNAinfo[]
                     {
-                        new DNAinfo("G", 1),
-                        new DNAinfo("GG", 5),
-                        new DNAinfo("GGG", 10)
+                        new DNAinfo("G", 6),
+                        new DNAinfo("2C1C1", 10)
                     }
                 },
                 {
-                    Rules.DNAnucleotides.INCREMENT_ROTATION,
+                    Rules.DNAnucleotides.AUX_1,
                     new DNAinfo[]
                     {
-                        new DNAinfo("-R", 1),
-                        new DNAinfo("+R", 5),
-                        new DNAinfo("R", 10)
+                        new DNAinfo("Z", 5),
+                        new DNAinfo("2[+++++Q][--Q]WL", 6),
+                        new DNAinfo("2[++Q][----Q]WL", 8),
+                        new DNAinfo("2[++++Q][----Q]WL", 10),
                     }
-                }
+                },
+                {
+                    Rules.DNAnucleotides.AUX_2,
+                    new DNAinfo[]
+                    {
+                        new DNAinfo("X", 5),
+                        new DNAinfo("G[----Z][++Z]Y", 6),
+                        new DNAinfo("G[--Z][++++Z]Y", 8),
+                        new DNAinfo("G[---Z][+++Z]Y", 10),
+                    }
+                },
+                {
+                    Rules.DNAnucleotides.AUX_3,
+                    new DNAinfo[]
+                    {
+                        new DNAinfo("W", 5),
+                        new DNAinfo("1[+++++Q][--Q]", 6),
+                        new DNAinfo("1[++Q][----Q]", 8),
+                        new DNAinfo("1[++++Q][----Q]", 10),
+                    }
+                },
+                {
+                    Rules.DNAnucleotides.AUX_4,
+                    new DNAinfo[]
+                    {
+                        new DNAinfo("Y", 5),
+                        new DNAinfo("G[----Z][++Z]G", 6),
+                        new DNAinfo("G[--Z][++++Z]G", 8),
+                        new DNAinfo("G[---Z][+++Z]G", 10),
+                    }
+                },
+                {
+                    Rules.DNAnucleotides.AUX_5,
+                    new DNAinfo[]
+                    {
+                        new DNAinfo("Q", 5),
+                        new DNAinfo("L", 10),
+                    }
+                },
+                {
+                    Rules.DNAnucleotides.AUX_6,
+                    new DNAinfo[]
+                    {
+                        new DNAinfo("K", 5),
+                        new DNAinfo("G[---Z][+++Z]XL", 10),
+                    }
+                },
             };
 
 
@@ -96,7 +143,7 @@ public class DataManager
                     Rules.DNAnucleotides.NONE,
                     new DNAinfo[]
                     {
-                        new DNAinfo("G[++G][--G]G[--G]G[++G]G[----G][++G][-G][+G][--G][++++G]", 10)
+                        new DNAinfo("[++G][--G][G][+G][-G]", 10)
                     }
                 },
                 {

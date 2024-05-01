@@ -12,21 +12,23 @@ public class VegetableProxyMesh : MonoBehaviour
     {
         Vector3[] vertices;
         int[] triangles;
-        public float angle;
+        int angle;
 
-        public MeshInfo(): this(new Vector3[0], new int[0]) { }
-        public MeshInfo(Vector3[] _vertices, int[] _triangles)
+        public MeshInfo(int _angle) : this(new Vector3[0], new int[0], _angle) { }
+        public MeshInfo(Vector3[] _vertices, int[] _triangles, int _angle)
         {
             vertices = _vertices;
             triangles = _triangles;
-            angle = 0;
+            angle = _angle;
         }
 
+        public void addAngle(int _angle) { angle += _angle; }
         public void setVertices(Vector3[] _vertices) { vertices = _vertices; }
         public void setTriangles(int[] _triangles) { triangles = _triangles; }
 
         public Vector3[] getVertices() { return vertices; }
         public int[] getTriangles() { return triangles; }
+        public int getAngle() { return angle; }
 
         public bool isEmpty() { return vertices.Length == 0 && triangles.Length == 0;  }
 
@@ -75,6 +77,26 @@ public class VegetableProxyMesh : MonoBehaviour
 
         public bool getIsFruit() { return isFruit; }
         public GameObject getGameObject() { return gObj; }
+
+        public void deleteObject() {
+            Destroy(gObj);
+        }
+    }
+    public class Leaf
+    {
+        GameObject gObj;
+
+        public Leaf(GameObject _gObj)
+        {
+            gObj = _gObj;
+        }
+
+        public GameObject getGameObject() { return gObj; }
+
+        public void deleteObject()
+        {
+            Destroy(gObj);
+        }
     }
 
     public class MeshNode
@@ -88,23 +110,46 @@ public class VegetableProxyMesh : MonoBehaviour
 
         MeshNode newStartNode;
         Queue<MeshNode> resetNodes;
+
         Queue<FruitsFlower> fruits;
         Queue<FruitsFlower> flowers;
+        Queue<Leaf> leafs;
 
-        public MeshNode(Vector3 _startPoint, Spawner _spawner, int sectionIndex)
+        public MeshNode(Vector3 _startPoint, Spawner _spawner, int sectionIndex, int _angle)
         {
             sectionDegree = 0;
             spawner = _spawner;
             startPoint = _startPoint;
 
-            sectionsController = new SectionsController(new MeshInfo(), sectionIndex, false);
+            sectionsController = new SectionsController(new MeshInfo(_angle), sectionIndex, false);
             resetNodes = new Queue<MeshNode>();
+            fruits = new Queue<FruitsFlower>();
+            flowers = new Queue<FruitsFlower>();
+            leafs = new Queue<Leaf>();
+        }
+
+        public void deleteAllGObj()
+        {
+            foreach (FruitsFlower f in fruits)
+                f.deleteObject();
+
+            foreach (FruitsFlower f in flowers) 
+                f.deleteObject();
+
+            foreach (Leaf l in leafs)
+                l.deleteObject();
+
+            foreach (MeshNode rn in resetNodes)
+                rn.deleteAllGObj();
+
+            if (newStartNode != null)
+                newStartNode.deleteAllGObj();
         }
 
         public SectionsController startGeneration(string rules)
         {
             sectionsController.setRules(rules);
-            MeshInfo generalMeshInfo = new MeshInfo();
+            MeshInfo generalMeshInfo = null; 
 
             var myUnSeenRules = rules;
 
@@ -131,7 +176,7 @@ public class VegetableProxyMesh : MonoBehaviour
                             if(resetNodeRules.Length == 0)
                             {
                                 var allMeshInfo1 = getAllResetsMeshInfo();
-                                sectionsController.setMeshInfo(spawner.UnifyMultyMeshes2(sectionsController.getMeshInfo(), allMeshInfo1));
+                                sectionsController.setMeshInfo(spawner.UnifyMultyMeshes(sectionsController.getMeshInfo(), allMeshInfo1));
                                 sectionsController.EndSection("");
                                 return sectionsController;
                             }
@@ -144,7 +189,7 @@ public class VegetableProxyMesh : MonoBehaviour
 
                         allMeshInfo2.Add(startNode.getMeshInfo());
 
-                        generalMeshInfo = spawner.UnifyMultyMeshes2(sectionsController.getMeshInfo(), allMeshInfo2.ToArray());
+                        generalMeshInfo = spawner.UnifyMultyMeshes(sectionsController.getMeshInfo(), allMeshInfo2.ToArray());
 
                         if (startNode.getEnded() && startNode.getIndex() == sectionsController.getIndex())
                         {
@@ -164,16 +209,23 @@ public class VegetableProxyMesh : MonoBehaviour
                         sectionsController.EndSection(myUnSeenRules.Split(']', 2)[1]);
                         return sectionsController;
                     }
-                    if((Rules.DNAnucleotides)c == Rules.DNAnucleotides.FRUIT)
+                    if ((Rules.DNAnucleotides)c == Rules.DNAnucleotides.FRUIT)
                     {
-                        GameObject fruit = spawner.createGO();
-                        fruit.name = "fruit";
+                        GameObject fruit = spawner.createFruit();
+                        if (fruit)
+                            fruits.Enqueue(new FruitsFlower(fruit, true));
+                    }
+                    if ((Rules.DNAnucleotides)c == Rules.DNAnucleotides.LEAF)
+                    {
+                        GameObject leaf = spawner.createLeaf();
+                        if (leaf)
+                            leafs.Enqueue(new Leaf(leaf));
                     }
                 }
             }
 
             //sectionsController.setRules("");
-            if (generalMeshInfo.isEmpty()) sectionsController.setMeshInfo(sectionsController.getMeshInfo());
+            if (generalMeshInfo == null || generalMeshInfo.isEmpty()) sectionsController.setMeshInfo(sectionsController.getMeshInfo());
             else sectionsController.setMeshInfo(generalMeshInfo);
             sectionsController.EndSection("");
             spawner.setPositionAndDegree(startPoint, sectionDegree);
@@ -192,12 +244,12 @@ public class VegetableProxyMesh : MonoBehaviour
 
         SectionsController goResetNode(string rules)
         {
-            resetNodes.Enqueue(new MeshNode(spawner.getPositionCenter(), spawner, sectionsController.getIndex() + 1));
+            resetNodes.Enqueue(new MeshNode(spawner.getPositionCenter(), spawner, sectionsController.getIndex() + 1, sectionsController.getMeshInfo().getAngle()));
             return resetNodes.Last().startGeneration(rules);
         }
         SectionsController goNewStartNode(string rules)
         {
-            newStartNode = new MeshNode(spawner.getPositionCenter(), spawner, sectionsController.getIndex());
+            newStartNode = new MeshNode(spawner.getPositionCenter(), spawner, sectionsController.getIndex(), sectionsController.getMeshInfo().getAngle());
             return newStartNode.startGeneration(rules);
         }
     }
@@ -206,7 +258,7 @@ public class VegetableProxyMesh : MonoBehaviour
     {
         GameObject parent, center, growCenter, left, right;
 
-        List<GameObject> fruitsVariants;
+        GameObject fruitVariant, leafVariant;
 
         float initialDegree;
         public Spawner(GameObject _parent)
@@ -230,7 +282,33 @@ public class VegetableProxyMesh : MonoBehaviour
             growCenter.transform.localPosition = (Vector3.up);
         }
 
-        public void setFruitsVariants(List<GameObject> _fruitsVariants) { fruitsVariants = _fruitsVariants; }
+        public void setFruitsVariants(GameObject _fruitVariant) { fruitVariant = _fruitVariant; }
+
+        public void setLeafsVariants(GameObject _leafVariant) { leafVariant = _leafVariant; }
+
+        public GameObject createLeaf()
+        {
+            if (leafVariant == null) return null;
+            var fruit = createGO(leafVariant);
+            fruit.name = "LEAF";
+            fruit.transform.rotation = center.transform.rotation;
+            return fruit;
+        }
+        public GameObject createFruit()
+        {
+            if (leafVariant == null) return null;
+            var fruit = createGO(fruitVariant);
+            fruit.name = "FRUIT";
+            return fruit;
+        }
+
+        public GameObject createGO(GameObject gObj)
+        {
+            gObj = Instantiate(gObj);
+            gObj.transform.parent = parent.transform;
+            gObj.transform.localPosition = center.transform.localPosition;
+            return gObj;
+        }
 
         public Vector3 getPositionCenter() { return center.transform.localPosition; }
         public float getDegree()
@@ -243,6 +321,7 @@ public class VegetableProxyMesh : MonoBehaviour
             center.transform.localPosition = newPosition;
             center.transform.rotation = Quaternion.AngleAxis(newDegree, Vector3.forward);
         }
+
         public void resetAllPositions()
         {
             center.transform.localPosition = Vector3.zero;
@@ -257,16 +336,15 @@ public class VegetableProxyMesh : MonoBehaviour
             center.transform.rotation = Quaternion.AngleAxis(center.transform.rotation.eulerAngles.z + addDegree, Vector3.forward);
         }
 
-        public MeshInfo UnifyMultyMeshes2(MeshInfo baseM, MeshInfo[] meshes)
+        public MeshInfo UnifyMultyMeshes(MeshInfo baseM, MeshInfo[] meshes)
         {
             //eliminem les meshes sense informacio, i si encara hi han coses seguim, sino retornem la base
             var aux = meshes.Where(mesh => !mesh.isEmpty()).ToArray();
             if (aux.Length == 0) return baseM;
-
             else meshes = aux;
 
             //ordenem de mes gran a mes petit respecte l'angle (o el que es el amteix, d'esquerra a dreta)
-            Array.Sort(meshes, (a, b) => b.angle.CompareTo(a.angle));
+            Array.Sort(meshes, (a, b) => b.getAngle().CompareTo(a.getAngle()));
 
             //agafo i preparo la base
             List<Vector3> vertices = new List<Vector3>(baseM.getVertices());
@@ -281,6 +359,7 @@ public class VegetableProxyMesh : MonoBehaviour
             }
 
             int vertexOffset = vertices.Count();
+                int vertexBaseOffset = vertices.Count();
             List<int> trianglesM2 = new List<int>();
             List<Vector3> verticesM2 = new List<Vector3>();
 
@@ -298,19 +377,18 @@ public class VegetableProxyMesh : MonoBehaviour
                 List<Vector3> oldMidPointV = new List<Vector3>();
                 List<int> oldMidPointT = new List<int>();
                 List<int> totalMidPoint = new List<int>();
-                int vertexBaseOffset = vertices.Count();
 
                 //quin es el centre?
-                int midIndex = meshes.Length / 2;
+                int midIndex;
 
-                //si tenim length 2 => el de la meitat es 0 (cas especial)
-                //si tenim length 3 => el de la meitat es 1, pero caldrà tranformarlo en index, per tant, 1-1 = 0
-                //si tenim length 4 => el de la meitat es 2, pero caldrà tranformarlo en index, per tant, 2-1 = 1
-                //si tenim length 6 => el de la meitat es 3, pero caldrà tranformarlo en index, per tant, 3-1 = 2
+                if (meshes.Length % 2 == 0) midIndex = (meshes.Length / 2) - 1;
+                else midIndex = ((meshes.Length-1) / 2);
+
+                //si tenim length 2 => el de la meitat es 1, pero caldrà tranformarlo en index, per tant, 1-1 = 0
+                //si tenim length 3 => el de la meitat es 2, pero caldrà tranformarlo en index, per tant, 2-1 = 1
+                //si tenim length 4 => el de la meitat es 3, pero caldrà tranformarlo en index, per tant, 3-1 = 2
                 //...
 
-                //NO es un cas especial?
-                if (midIndex != 0) midIndex--;
 
                 int index = 0;
                 foreach (MeshInfo mesh in meshes)
@@ -331,12 +409,15 @@ public class VegetableProxyMesh : MonoBehaviour
                     trianglesM2.RemoveAt(0);
 
                     //si ens troivem mes enlla del centre la base offset pase a ser -1
-                    if (index <= midIndex && trianglesM2[0] != vertexBaseOffset - 2)
+                    if (index <= midIndex)
+                    {
                         trianglesM2[0] = vertexBaseOffset - 2; //agafem el penultim vertex de la base en la que ens volem unir (esquerra)
-                    else if(index > midIndex && trianglesM2[0] != vertexBaseOffset - 1)
+                    }
+                    else if(index > midIndex)
                     {
                         trianglesM2[0] = vertexBaseOffset - 1; //agafem l'enultim vertex de la base en la que ens volem unir (dreta)
-                        totalMidPoint.Add(oldMidPointT[0]); //guardem el punt considerat el centre total de la unio
+                        if(totalMidPoint.Count() ==0)
+                            totalMidPoint.Add(oldMidPointT[0]); //guardem el punt considerat el centre total de la unio, l'anterior vell punt mig
                     }
 
                     triangles.Add(trianglesM2[0]);
@@ -390,6 +471,7 @@ public class VegetableProxyMesh : MonoBehaviour
                 triangles.Add(totalMidPoint[0]);
                 triangles.Add(vertexBaseOffset - 1);
             }
+            
             else if(meshes.Length  == 1) //es una unió simple
             {
                 //preparem les variables
@@ -420,31 +502,7 @@ public class VegetableProxyMesh : MonoBehaviour
             }
 
             
-            return new MeshInfo(vertices.ToArray(), triangles.ToArray());
-        }
-
-        public MeshInfo UnifyMultyMeshes(MeshInfo baseM, MeshInfo[] meshes)
-        {
-            List<Vector3> vertices = new List<Vector3>(baseM.getVertices());
-            List<int> triangles = new List<int>(baseM.getTriangles());
-
-            int vertexOffset = vertices.Count();
-            List<int> trianglesM2 = new List<int>();
-
-            foreach (MeshInfo mi in meshes)
-            {
-                // Combine vertices (using AddRange makes the proces more eficient)
-                vertices.AddRange(mi.getVertices());
-                trianglesM2.AddRange(mi.getTriangles());
-
-                foreach (int t in trianglesM2)
-                    triangles.Add(t + vertexOffset);
-
-
-                vertexOffset = vertices.Count();
-                trianglesM2.Clear();
-            }
-            return new MeshInfo(vertices.ToArray(), triangles.ToArray());
+            return new MeshInfo(vertices.ToArray(), triangles.ToArray(), baseM.getAngle());
         }
 
         public MeshInfo grow(int lenghtY, MeshInfo meshInfo)
@@ -522,14 +580,6 @@ public class VegetableProxyMesh : MonoBehaviour
             return meshInfo;
         }
 
-        public GameObject createGO()
-        {
-            GameObject gObj = new GameObject();
-            gObj.transform.parent = parent.transform;
-            gObj.transform.localPosition = center.transform.localPosition;
-            return gObj;
-        }
-
         public bool translateStandartRules(char value, MeshInfo meshInfo)
         {
             switch ((Rules.DNAnucleotides)value)
@@ -538,19 +588,43 @@ public class VegetableProxyMesh : MonoBehaviour
                     //creix la mesh acutal
                     grow(1, meshInfo);
                     break;
+                case Rules.DNAnucleotides.GROW_1:
+                    //creix la mesh acutal Y = 1
+                    grow(1, meshInfo);
+                    break;
+                case Rules.DNAnucleotides.GROW_2:
+                    //creix la mesh acutal Y = 2
+                    grow(2, meshInfo);
+                    break;
+                case Rules.DNAnucleotides.GROW_3:
+                    //creix la mesh acutal Y = 3
+                    grow(3, meshInfo);
+                    break;
+                case Rules.DNAnucleotides.GROW_4:
+                    //creix la mesh acutal Y = 4
+                    grow(4, meshInfo);
+                    break;
                 case Rules.DNAnucleotides.POSITIVE_ROTATION:
                     //rotem en +
-                    setRotation(25);
-                    meshInfo.angle += 25;
+                    setRotation(10);
+                    meshInfo.addAngle(10);
                     break;
                 case Rules.DNAnucleotides.NEGATIVE_ROTATION:
                     //rotem en -
-                    setRotation(-25);
-                    meshInfo.angle -= 25;
+                    setRotation(-10);
+                    meshInfo.addAngle(-10);
                     break;
-                case Rules.DNAnucleotides.NONE | Rules.DNAnucleotides.INCREMENT_ROTATION:
-                    //no fem res -> NONE
-                    //no fem res, en algun moment a futur s'incremenmtara la rotacio base-> Rules.DNAnucleotides.INCREMENT_ROTATION
+                case Rules.DNAnucleotides.CONTINUO_ROTATION:
+                    //rotem en la mateixa direcció
+                    if (meshInfo.getAngle() > 0) setRotation(5);
+                    else setRotation(-5);
+                    break;
+                case Rules.DNAnucleotides.NONE | Rules.DNAnucleotides.AUX_1 | 
+                Rules.DNAnucleotides.AUX_2 | Rules.DNAnucleotides.AUX_3 | 
+                Rules.DNAnucleotides.AUX_4 | Rules.DNAnucleotides.AUX_5 | 
+                Rules.DNAnucleotides.AUX_6:
+                    //no fem res, es l'axioma -> NONE
+                    //no fem res, son auxiliars -> AUX_...
                     break;
                 default: return false;
             }
@@ -566,11 +640,14 @@ public class VegetableProxyMesh : MonoBehaviour
     [SerializeField]
     UnityGObjMap fruitsMap;
 
-    Dictionary<string, GameObject[]> fruitsVariants;
- 
+    [SerializeField]
+    UnityGObjMap leafsMap;
+
+    Dictionary<string, GameObject[]> fruitsVariants, leafsVariants;
 
     Spawner GOspwaner;
     MeshNode meshNode;
+
 
     Vegetable myVegetable;
     Mesh vegetableMesh;
@@ -601,27 +678,36 @@ public class VegetableProxyMesh : MonoBehaviour
         vegetableMesh = new Mesh();
 
         fruitsVariants = fruitsMap.toDictionary();
+        leafsVariants = leafsMap.toDictionary();
+    }
+
+    public void deleteAll()
+    {
+        meshNode.deleteAllGObj();
+        Destroy(gameObject);
     }
 
 
     public void setVegetable(Vegetable vegetable)//li diem quina hortalissa es
     {
-        if (vegetable == null) throw new System.NotImplementedException();
+        if (vegetable == null) throw new NotImplementedException();
         myVegetable = vegetable;
         vName = myVegetable.name;
         vState = myVegetable.myState;
 
-        GameObject[] fruits;
-        if (fruitsVariants.TryGetValue(vName.ToLower(), out fruits))
-        {
-            Debug.Log("TENMIM"+fruits.Length);
-        }
-        else
-        {
+        setVariants(GOspwaner);
 
-            Debug.Log("NO TENMIM");
-        }
+    }
 
+    public void setVariants(Spawner _spawner)
+    {
+        GameObject[] auxGameObj;
+
+        if (fruitsVariants.TryGetValue(vName.ToLower(), out auxGameObj))
+            _spawner.setFruitsVariants(auxGameObj[Random.Range(0, auxGameObj.Length)]);
+
+        if (leafsVariants.TryGetValue(vName.ToLower(), out auxGameObj))
+            _spawner.setLeafsVariants(auxGameObj[Random.Range(0, auxGameObj.Length)]);
     }
 
     public void getFruit()
@@ -634,7 +720,12 @@ public class VegetableProxyMesh : MonoBehaviour
         if (myVegetable == null) throw new System.NotImplementedException();
         activeDNA = myVegetable.pasTime(activeDNA);
 
-        meshNode = new MeshNode(GOspwaner.getPositionCenter(), GOspwaner, 0);//iniciem la generacio de 0 sempre
+
+        if(meshNode!!= null)
+            meshNode.deleteAllGObj();
+        
+
+        meshNode = new MeshNode(GOspwaner.getPositionCenter(), GOspwaner, 0, 0);//iniciem la generacio de 0 sempre
         MeshInfo meshInfo = meshNode.startGeneration(activeDNA).getMeshInfo();
 
         vegetableMesh.Clear();

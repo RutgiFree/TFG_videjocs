@@ -11,35 +11,113 @@
     "DNA": {
       "NONE": [
         {
-          "info": "X[RG]",
+          "info": "D1[+G[---Z][+++Z]XL][+++K][----K][++++++K][-K]",
+          "probability": 5.0
+        },
+        {
+          "info": "D1[G[---Z][+++Z]XL][+++++K][-----K][++K][---K]",
           "probability": 10.0
         }
       ],
       "GROW": [
         {
           "info": "G",
-          "probability": 1.0
+          "probability": 6.0
         },
         {
-          "info": "GG",
-          "probability": 5.0
-        },
-        {
-          "info": "GGG",
+          "info": "2C1C1",
           "probability": 10.0
         }
       ],
-      "INCREMENT_ROTATION": [
+      "AUX_1": [
         {
-          "info": "-R",
-          "probability": 1.0
-        },
-        {
-          "info": "+R",
+          "info": "Z",
           "probability": 5.0
         },
         {
-          "info": "R",
+          "info": "2[+++++Q][--Q]WL",
+          "probability": 6.0
+        },
+        {
+          "info": "2[++Q][----Q]WL",
+          "probability": 8.0
+        },
+        {
+          "info": "2[++++Q][----Q]WL",
+          "probability": 10.0
+        }
+      ],
+      "AUX_2": [
+        {
+          "info": "X",
+          "probability": 5.0
+        },
+        {
+          "info": "G[----Z][++Z]Y",
+          "probability": 6.0
+        },
+        {
+          "info": "G[--Z][++++Z]Y",
+          "probability": 8.0
+        },
+        {
+          "info": "G[---Z][+++Z]Y",
+          "probability": 10.0
+        }
+      ],
+      "AUX_3": [
+        {
+          "info": "W",
+          "probability": 5.0
+        },
+        {
+          "info": "1[+++++Q][--Q]",
+          "probability": 6.0
+        },
+        {
+          "info": "1[++Q][----Q]",
+          "probability": 8.0
+        },
+        {
+          "info": "1[++++Q][----Q]",
+          "probability": 10.0
+        }
+      ],
+      "AUX_4": [
+        {
+          "info": "Y",
+          "probability": 5.0
+        },
+        {
+          "info": "G[----Z][++Z]G",
+          "probability": 6.0
+        },
+        {
+          "info": "G[--Z][++++Z]G",
+          "probability": 8.0
+        },
+        {
+          "info": "G[---Z][+++Z]G",
+          "probability": 10.0
+        }
+      ],
+      "AUX_5": [
+        {
+          "info": "Q",
+          "probability": 5.0
+        },
+        {
+          "info": "L",
+          "probability": 10.0
+        }
+      ],
+      "AUX_6": [
+        {
+          "info": "K",
+          "probability": 5.0
+        },
+        {
+          "info": "G[---Z][+++Z]XL",
           "probability": 10.0
         }
       ]
@@ -85,7 +163,7 @@
     "DNA": {
       "NONE": [
         {
-          "info": "G[++G][--G]G[--G]G[++G]G[----G][++G][-G][+G][--G][++++G]",
+          "info": "[++G][--G][G][+G][-G]",
           "probability": 10.0
         }
       ],

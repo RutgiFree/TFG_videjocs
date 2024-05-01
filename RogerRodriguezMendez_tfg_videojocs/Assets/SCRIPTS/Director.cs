@@ -44,6 +44,11 @@ public class Director : MonoBehaviour
             return -1;
         }
     }
+    public void deleteAll()
+    {
+        vProxy.deleteAll();
+    }
+
 
     public void changeState()
     {
