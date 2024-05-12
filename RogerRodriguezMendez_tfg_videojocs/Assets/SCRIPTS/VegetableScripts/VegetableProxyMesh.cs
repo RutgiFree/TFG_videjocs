@@ -260,8 +260,8 @@ public class VegetableProxyMesh : MonoBehaviour
 
         GameObject fruitVariant, leafVariant;
 
-        float initialDegree;
-        public Spawner(GameObject _parent)
+        float initialDegree, heigth, width;
+        public Spawner(GameObject _parent, float squerWidth, float squereHeight)
         {
             parent = _parent;
             center = new GameObject("center-spawner");
@@ -271,15 +271,17 @@ public class VegetableProxyMesh : MonoBehaviour
 
             left = new GameObject("left-spawner");
             left.transform.parent = center.transform;
-            left.transform.localPosition = (Vector3.left * 0.25f);
+            left.transform.localPosition = (Vector3.left * squerWidth);
 
             right = new GameObject("right-spawner");
             right.transform.parent = center.transform;
-            right.transform.localPosition = (Vector3.right * 0.25f);
+            right.transform.localPosition = (Vector3.right * squerWidth);
 
             growCenter = new GameObject("growCenter-spawner");
             growCenter.transform.parent = center.transform;
-            growCenter.transform.localPosition = (Vector3.up);
+            growCenter.transform.localPosition = (Vector3.up * squereHeight);
+            heigth = squereHeight;
+            width = squerWidth;
         }
 
         public void setFruitsVariants(GameObject _fruitVariant) { fruitVariant = _fruitVariant; }
@@ -292,6 +294,7 @@ public class VegetableProxyMesh : MonoBehaviour
             var fruit = createGO(leafVariant);
             fruit.name = "LEAF";
             fruit.transform.rotation = center.transform.rotation;
+            fruit.transform.localScale *= heigth;
             return fruit;
         }
         public GameObject createFruit()
@@ -299,6 +302,7 @@ public class VegetableProxyMesh : MonoBehaviour
             if (leafVariant == null) return null;
             var fruit = createGO(fruitVariant);
             fruit.name = "FRUIT";
+            fruit.transform.localScale *= heigth;
             return fruit;
         }
 
@@ -326,9 +330,9 @@ public class VegetableProxyMesh : MonoBehaviour
         {
             center.transform.localPosition = Vector3.zero;
             center.transform.rotation = Quaternion.AngleAxis(initialDegree, Vector3.forward);
-            left.transform.localPosition = (Vector3.left * 0.25f);
-            right.transform.localPosition = (Vector3.right * 0.25f);
-            growCenter.transform.localPosition = (Vector3.up);
+            left.transform.localPosition = (Vector3.left * width);
+            right.transform.localPosition = (Vector3.right * width);
+            growCenter.transform.localPosition = (Vector3.up * heigth);
         }
 
         public void setRotation(float addDegree)
@@ -519,7 +523,7 @@ public class VegetableProxyMesh : MonoBehaviour
                 center.transform.localPosition = growCenter.transform.localPosition;
 
                 growCenter.transform.parent = center.transform;
-                growCenter.transform.localPosition = Vector3.up;
+                growCenter.transform.localPosition = Vector3.up * heigth;
                 yExtra = -1;
             }
 
@@ -550,7 +554,7 @@ public class VegetableProxyMesh : MonoBehaviour
                     center.transform.localPosition = growCenter.transform.localPosition;
 
                     growCenter.transform.parent = center.transform;
-                    growCenter.transform.localPosition = Vector3.up;
+                    growCenter.transform.localPosition = Vector3.up * heigth;
                 }
             }
 
@@ -643,7 +647,16 @@ public class VegetableProxyMesh : MonoBehaviour
     [SerializeField]
     UnityGObjMap leafsMap;
 
+    [SerializeField]
+    UnityMaterialMap branchesMap;
+
+    [SerializeField]
+    float width = 0.25f, heigth = 1f;
+
     Dictionary<string, GameObject[]> fruitsVariants, leafsVariants;
+    Dictionary<string, Material[]> bracnhresVariants;
+
+    Material branchMaterial;
 
     Spawner GOspwaner;
     MeshNode meshNode;
@@ -651,6 +664,7 @@ public class VegetableProxyMesh : MonoBehaviour
 
     Vegetable myVegetable;
     Mesh vegetableMesh;
+
 
     /*Un quadrat esta format per 2 triangles
      *    O---O
@@ -671,14 +685,15 @@ public class VegetableProxyMesh : MonoBehaviour
 
     void Awake()
     {
-        GOspwaner = new Spawner(transform.gameObject);
+        GOspwaner = new Spawner(transform.gameObject, width, heigth);
         GOspwaner.setPositionAndDegree(Vector3.zero, transform.localEulerAngles.z);
 
         activeDNA = ((char)Rules.DNAnucleotides.NONE).ToString();
         vegetableMesh = new Mesh();
 
-        fruitsVariants = fruitsMap.toDictionary();
-        leafsVariants = leafsMap.toDictionary();
+        fruitsVariants = fruitsMap.toDictionaryGObj();
+        leafsVariants = leafsMap.toDictionaryGObj();
+        bracnhresVariants = branchesMap.toDictionaryMaterial();
     }
 
     public void deleteAll()
@@ -702,12 +717,16 @@ public class VegetableProxyMesh : MonoBehaviour
     public void setVariants(Spawner _spawner)
     {
         GameObject[] auxGameObj;
+        Material[] auxMaterial;
 
         if (fruitsVariants.TryGetValue(vName.ToLower(), out auxGameObj))
             _spawner.setFruitsVariants(auxGameObj[Random.Range(0, auxGameObj.Length)]);
 
         if (leafsVariants.TryGetValue(vName.ToLower(), out auxGameObj))
             _spawner.setLeafsVariants(auxGameObj[Random.Range(0, auxGameObj.Length)]);
+
+        if (bracnhresVariants.TryGetValue(vName.ToLower(), out auxMaterial))
+            branchMaterial = (auxMaterial[Random.Range(0, auxMaterial.Length)]);
     }
 
     public void getFruit()
@@ -732,6 +751,37 @@ public class VegetableProxyMesh : MonoBehaviour
         vegetableMesh.vertices = meshInfo.getVertices();
         vegetableMesh.triangles = meshInfo.getTriangles();
         vegetableMesh.RecalculateNormals();
+        if (branchMaterial)
+        {
+            //si tenim un m,aterial a afegor cal calcular les UVs per dirli a la mesh quins colors agafara
+            Vector2[] uvs = new Vector2[vegetableMesh.vertices.Length];
+            float y = 0;
+            for (int i = 0; i < uvs.Length; i++)
+            {
+                //Savem que les coordenades en les UVs van de (0,0) a (1,1), on el centre absolut es (0'5, 0'5),
+                //per tant, el centre inferior es (0'5,0), i el nostre centre absolñut en coordenades de vertex es (0,0).
+                //Savent aixo cal fer una transformacio per que no hi agi cionflictes en les coordenades, i per tant poder aplicar una gradiant de colors.
+
+                //aixi doncs, agafam una cordenada de vertes, per exemple (-0'5,0) que equivaldria a  un verteex inferior a la dreta,
+                //i la dividim per l'alçada, que es pot obtenir mitjant "bounds.size.y", fent que per alçada tota la mesh capigui dintre del material.
+                //Per el que fa l'amplada, es fa un calcul mes llarg, on agafem de la cordenada la seva X, i li sumem l'amplada, que es pot obtenir mitjant "bounds.size.x"
+
+        
+                uvs[i] = new Vector2(0, y);
+                i++;
+
+                if(i < uvs.Length)
+                    uvs[i] = new Vector2(1, y);
+                
+                y++;
+                if (y > 1) y = 0;
+            }
+
+            vegetableMesh.uv = uvs;
+
+            GetComponent<MeshRenderer>().material = branchMaterial;
+        }
+
         GetComponent<MeshFilter>().mesh = vegetableMesh;
         GOspwaner.resetAllPositions();//recetegem la posicio del spawner
         return activeDNA;
@@ -751,14 +801,32 @@ public class VegetableProxyMesh : MonoBehaviour
 public class UnityGObjMap
 {
     [SerializeField]
-    UnityGObjMapElements[] elements;
+    UnityGObjMapElements[] elementsGObjects;
 
-    public Dictionary<string, GameObject[]> toDictionary()
+    public Dictionary<string, GameObject[]> toDictionaryGObj()
     {
 
         Dictionary<string, GameObject[]> dictionary = new Dictionary<string, GameObject[]>();
 
-        foreach(UnityGObjMapElements element in elements)
+        foreach(UnityGObjMapElements element in elementsGObjects)
+            dictionary.Add(element.key, element.value);
+
+        return dictionary;
+    }
+}
+
+[Serializable]
+public class UnityMaterialMap
+{
+    [SerializeField]
+    UnityMaterialMapElements[] materialElements;
+
+    public Dictionary<string, Material[]> toDictionaryMaterial()
+    {
+
+        Dictionary<string, Material[]> dictionary = new Dictionary<string, Material[]>();
+
+        foreach (UnityMaterialMapElements element in materialElements)
             dictionary.Add(element.key, element.value);
 
         return dictionary;
@@ -772,4 +840,13 @@ public class UnityGObjMapElements
     public string key;
     [SerializeField]
     public GameObject[] value;
+}
+
+[Serializable]
+public class UnityMaterialMapElements
+{
+    [SerializeField]
+    public string key;
+    [SerializeField]
+    public Material[] value;
 }

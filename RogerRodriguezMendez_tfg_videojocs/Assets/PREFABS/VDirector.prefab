@@ -100,17 +100,25 @@ MonoBehaviour:
   vName: 
   activeDNA: 
   fruitsMap:
-    elements:
+    elementsGObjects:
     - key: carrot
       value:
-      - {fileID: 5618682790547192317, guid: 7a5a0c67170083244a90b43a8c190e64, type: 3}
       - {fileID: 5618682790547192317, guid: 4632d3179b73aeb4db78862cb1640baa, type: 3}
+      - {fileID: 5618682790547192317, guid: 7a5a0c67170083244a90b43a8c190e64, type: 3}
   leafsMap:
-    elements:
+    elementsGObjects:
     - key: carrot
       value:
-      - {fileID: 5662727328928595423, guid: 29050106300a2e54a815807d14acd9df, type: 3}
       - {fileID: 5662727328928595423, guid: c2a500907a1a8254d8b59a0d99ffef47, type: 3}
+      - {fileID: 5662727328928595423, guid: 29050106300a2e54a815807d14acd9df, type: 3}
+  branchesMap:
+    materialElements:
+    - key: carrot
+      value:
+      - {fileID: 2100000, guid: 5574c4867ab1f2d4cb3ad2ab1919821e, type: 2}
+      - {fileID: 2100000, guid: 631fe72f57d08334fbf460fc9c55fcd2, type: 2}
+  width: 0.15
+  heigth: 0.65
 --- !u!114 &4549490906095987507
 MonoBehaviour:
   m_ObjectHideFlags: 0
