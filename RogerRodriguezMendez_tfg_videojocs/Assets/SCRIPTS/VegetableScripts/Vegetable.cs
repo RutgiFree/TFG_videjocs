@@ -30,11 +30,13 @@ public class Vegetable  //es el tipus especific de contructor
     public Rules.states[] myStates;
     public Rules.states myState;
     public int myStateIndex;
+    public float width;
+    public float height;
     public  Dictionary<Rules.DNAnucleotides, DNAinfo[]> DNA;
 
 
     public Vegetable() { }//es encesari per la serialitzacio de l'objecte
-    public Vegetable(string _name, Rules.states[] _myStates, int _myStateIndex, Dictionary<Rules.DNAnucleotides, DNAinfo[]> _DNA)
+    public Vegetable(string _name, Rules.states[] _myStates, int _myStateIndex, Dictionary<Rules.DNAnucleotides, DNAinfo[]> _DNA, float _width, float _height)
     {
         if (_myStates.Length == 0 || _DNA.Count == 0) throw new System.Exception("empty STATES or DNA given");
 
@@ -45,6 +47,8 @@ public class Vegetable  //es el tipus especific de contructor
         myStates =_myStates;
         myState =_myStates[myStateIndex];
         DNA = _DNA;
+        width = _width;
+        height = _height;
     }
 
 

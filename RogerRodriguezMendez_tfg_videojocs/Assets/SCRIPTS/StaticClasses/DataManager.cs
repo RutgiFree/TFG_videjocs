@@ -108,13 +108,13 @@ public class DataManager
                 new Vegetable(
                         "Carrot",
                         new Rules.states[] { Rules.states.GERMINATION, Rules.states.GROWING, Rules.states.DYING },
-                        0, myDNA);
+                        0, myDNA, 0.125f, 0.65f);
             auxData.Add(veg.name.ToUpper(), veg);
 
-            //eaggplant
+            //tomato
             myDNA = new Dictionary<Rules.DNAnucleotides, DNAinfo[]>
             {
-                {//G+[[N]-N]-F[-GN]+N //G[+N][-N]
+                {
                     Rules.DNAnucleotides.NONE,
                     new DNAinfo[]
                     {
@@ -131,9 +131,9 @@ public class DataManager
             };
             veg =
                 new Vegetable(
-                        "Eaggplant",
+                        "Tomato",
                         new Rules.states[] { Rules.states.GERMINATION, Rules.states.GROWING, Rules.states.FLOWERING, Rules.states.RIPENING, Rules.states.DYING },
-                        0, myDNA);
+                        0, myDNA, 0,0);
             auxData.Add(veg.name.ToUpper(), veg);
 
             //cacatua
@@ -158,7 +158,7 @@ public class DataManager
                 new Vegetable(
                         "Cacatua",
                         new Rules.states[] { Rules.states.GERMINATION, Rules.states.GROWING, Rules.states.FLOWERING, Rules.states.RIPENING, Rules.states.DYING },
-                        0, myDNA);
+                        0, myDNA, 0, 0);
             auxData.Add(veg.name.ToUpper(), veg);
 
 

@@ -260,7 +260,7 @@ public class VegetableProxyMesh : MonoBehaviour
 
         GameObject fruitVariant, leafVariant;
 
-        float initialDegree, heigth, width;
+        float initialDegree, height, width;
         public Spawner(GameObject _parent, float squerWidth, float squereHeight)
         {
             parent = _parent;
@@ -280,9 +280,12 @@ public class VegetableProxyMesh : MonoBehaviour
             growCenter = new GameObject("growCenter-spawner");
             growCenter.transform.parent = center.transform;
             growCenter.transform.localPosition = (Vector3.up * squereHeight);
-            heigth = squereHeight;
+            height = squereHeight;
             width = squerWidth;
         }
+
+        public void setWidth(float _w) { width = _w; }
+        public void setHeight(float _h) { height = _h; }
 
         public void setFruitsVariants(GameObject _fruitVariant) { fruitVariant = _fruitVariant; }
 
@@ -294,7 +297,7 @@ public class VegetableProxyMesh : MonoBehaviour
             var fruit = createGO(leafVariant);
             fruit.name = "LEAF";
             fruit.transform.rotation = center.transform.rotation;
-            fruit.transform.localScale *= heigth;
+            fruit.transform.localScale *= height;
             return fruit;
         }
         public GameObject createFruit()
@@ -302,7 +305,7 @@ public class VegetableProxyMesh : MonoBehaviour
             if (leafVariant == null) return null;
             var fruit = createGO(fruitVariant);
             fruit.name = "FRUIT";
-            fruit.transform.localScale *= heigth;
+            fruit.transform.localScale *= height;
             return fruit;
         }
 
@@ -332,7 +335,7 @@ public class VegetableProxyMesh : MonoBehaviour
             center.transform.rotation = Quaternion.AngleAxis(initialDegree, Vector3.forward);
             left.transform.localPosition = (Vector3.left * width);
             right.transform.localPosition = (Vector3.right * width);
-            growCenter.transform.localPosition = (Vector3.up * heigth);
+            growCenter.transform.localPosition = (Vector3.up * height);
         }
 
         public void setRotation(float addDegree)
@@ -523,7 +526,7 @@ public class VegetableProxyMesh : MonoBehaviour
                 center.transform.localPosition = growCenter.transform.localPosition;
 
                 growCenter.transform.parent = center.transform;
-                growCenter.transform.localPosition = Vector3.up * heigth;
+                growCenter.transform.localPosition = Vector3.up * height;
                 yExtra = -1;
             }
 
@@ -554,7 +557,7 @@ public class VegetableProxyMesh : MonoBehaviour
                     center.transform.localPosition = growCenter.transform.localPosition;
 
                     growCenter.transform.parent = center.transform;
-                    growCenter.transform.localPosition = Vector3.up * heigth;
+                    growCenter.transform.localPosition = Vector3.up * height;
                 }
             }
 
@@ -651,7 +654,7 @@ public class VegetableProxyMesh : MonoBehaviour
     UnityMaterialMap branchesMap;
 
     [SerializeField]
-    float width = 0.25f, heigth = 1f;
+    float width = 0.25f, height = 1f;
 
     Dictionary<string, GameObject[]> fruitsVariants, leafsVariants;
     Dictionary<string, Material[]> bracnhresVariants;
@@ -685,7 +688,7 @@ public class VegetableProxyMesh : MonoBehaviour
 
     void Awake()
     {
-        GOspwaner = new Spawner(transform.gameObject, width, heigth);
+        GOspwaner = new Spawner(transform.gameObject, width, height);
         GOspwaner.setPositionAndDegree(Vector3.zero, transform.localEulerAngles.z);
 
         activeDNA = ((char)Rules.DNAnucleotides.NONE).ToString();
@@ -709,6 +712,19 @@ public class VegetableProxyMesh : MonoBehaviour
         myVegetable = vegetable;
         vName = myVegetable.name;
         vState = myVegetable.myState;
+
+        if (vegetable.width > 0)
+        {
+            width = vegetable.width;
+            GOspwaner.setWidth(vegetable.width);
+        }
+
+        if (vegetable.height > 0)
+        {
+            height = vegetable.height;
+            GOspwaner.setHeight(vegetable.height);
+        }
+
 
         setVariants(GOspwaner);
 

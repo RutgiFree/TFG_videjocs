@@ -8,6 +8,7 @@ public class Director : MonoBehaviour
     [SerializeField] VegetableProxyMesh vProxy;
     [SerializeField] string vName;
     [SerializeField] int vIteretionsDone;
+    [SerializeField] int vIteretionsToDo;
     [SerializeField] string vDNA;
     [SerializeField] Rules.states vState;
 
@@ -15,6 +16,16 @@ public class Director : MonoBehaviour
     void Start()
     {
         vProxy = GetComponent<VegetableProxyMesh>();
+        if (vName != "")
+        {
+            setVegetable(vName);
+            int i = 0;
+            do
+            {
+                pasTime();
+                i++;
+            }while(i<vIteretionsToDo);
+        }
     }
 
     public bool setVegetable(string _vName)
