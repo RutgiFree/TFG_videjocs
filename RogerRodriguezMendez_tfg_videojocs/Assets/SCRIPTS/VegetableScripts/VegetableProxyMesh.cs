@@ -209,6 +209,12 @@ public class VegetableProxyMesh : MonoBehaviour
                         sectionsController.EndSection(myUnSeenRules.Split(']', 2)[1]);
                         return sectionsController;
                     }
+                    if ((Rules.DNAnucleotides)c == Rules.DNAnucleotides.FLOWER)
+                    {
+                        GameObject flower = spawner.createFlower();
+                        if (flower)
+                            flowers.Enqueue(new FruitsFlower(flower, false));
+                    }
                     if ((Rules.DNAnucleotides)c == Rules.DNAnucleotides.FRUIT)
                     {
                         GameObject fruit = spawner.createFruit();
@@ -258,7 +264,7 @@ public class VegetableProxyMesh : MonoBehaviour
     {
         GameObject parent, center, growCenter, left, right;
 
-        GameObject fruitVariant, leafVariant;
+        GameObject fruitVariant, leafVariant, flowerVariant;
 
         float initialDegree, height, width;
         public Spawner(GameObject _parent, float squerWidth, float squereHeight)
@@ -287,6 +293,7 @@ public class VegetableProxyMesh : MonoBehaviour
         public void setWidth(float _w) { width = _w; }
         public void setHeight(float _h) { height = _h; }
 
+        public void setFlowersVariants(GameObject _flowerVariant) { flowerVariant = _flowerVariant; }
         public void setFruitsVariants(GameObject _fruitVariant) { fruitVariant = _fruitVariant; }
 
         public void setLeafsVariants(GameObject _leafVariant) { leafVariant = _leafVariant; }
@@ -294,19 +301,29 @@ public class VegetableProxyMesh : MonoBehaviour
         public GameObject createLeaf()
         {
             if (leafVariant == null) return null;
-            var fruit = createGO(leafVariant);
-            fruit.name = "LEAF";
-            fruit.transform.rotation = center.transform.rotation;
-            fruit.transform.localScale *= height;
-            return fruit;
+            var leaf = createGO(leafVariant);
+            leaf.name = "LEAF";
+            leaf.transform.rotation = center.transform.rotation;
+            leaf.transform.localScale *= height;
+            return leaf;
         }
         public GameObject createFruit()
         {
             if (leafVariant == null) return null;
             var fruit = createGO(fruitVariant);
             fruit.name = "FRUIT";
+            fruit.transform.rotation = center.transform.rotation;
             fruit.transform.localScale *= height;
             return fruit;
+        }
+        public GameObject createFlower()
+        {
+            if (flowerVariant == null) return null;
+            var flower = createGO(flowerVariant);
+            flower.name = "FLOWER";
+            flower.transform.rotation = center.transform.rotation;
+            flower.transform.localScale *= height;
+            return flower;
         }
 
         public GameObject createGO(GameObject gObj)
@@ -627,9 +644,11 @@ public class VegetableProxyMesh : MonoBehaviour
                     else setRotation(-5);
                     break;
                 case Rules.DNAnucleotides.NONE | Rules.DNAnucleotides.AUX_1 | 
-                Rules.DNAnucleotides.AUX_2 | Rules.DNAnucleotides.AUX_3 | 
-                Rules.DNAnucleotides.AUX_4 | Rules.DNAnucleotides.AUX_5 | 
-                Rules.DNAnucleotides.AUX_6:
+                Rules.DNAnucleotides.AUX_2 | Rules.DNAnucleotides.AUX_3 |
+                Rules.DNAnucleotides.AUX_4 | Rules.DNAnucleotides.AUX_5 |
+                Rules.DNAnucleotides.AUX_6 | Rules.DNAnucleotides.AUX_7 |
+                Rules.DNAnucleotides.AUX_8 | Rules.DNAnucleotides.AUX_9 | 
+                Rules.DNAnucleotides.AUX_10:
                     //no fem res, es l'axioma -> NONE
                     //no fem res, son auxiliars -> AUX_...
                     break;
@@ -645,6 +664,9 @@ public class VegetableProxyMesh : MonoBehaviour
     [SerializeField] string activeDNA;
 
     [SerializeField]
+    UnityGObjMap flowersMap;
+
+    [SerializeField]
     UnityGObjMap fruitsMap;
 
     [SerializeField]
@@ -656,7 +678,7 @@ public class VegetableProxyMesh : MonoBehaviour
     [SerializeField]
     float width = 0.25f, height = 1f;
 
-    Dictionary<string, GameObject[]> fruitsVariants, leafsVariants;
+    Dictionary<string, GameObject[]> fruitsVariants, leafsVariants, flowersVariants;
     Dictionary<string, Material[]> bracnhresVariants;
 
     Material branchMaterial;
@@ -694,6 +716,7 @@ public class VegetableProxyMesh : MonoBehaviour
         activeDNA = ((char)Rules.DNAnucleotides.NONE).ToString();
         vegetableMesh = new Mesh();
 
+        flowersVariants = flowersMap.toDictionaryGObj();
         fruitsVariants = fruitsMap.toDictionaryGObj();
         leafsVariants = leafsMap.toDictionaryGObj();
         bracnhresVariants = branchesMap.toDictionaryMaterial();
@@ -734,6 +757,9 @@ public class VegetableProxyMesh : MonoBehaviour
     {
         GameObject[] auxGameObj;
         Material[] auxMaterial;
+
+        if (flowersVariants.TryGetValue(vName.ToLower(), out auxGameObj))
+            _spawner.setFlowersVariants(auxGameObj[Random.Range(0, auxGameObj.Length)]);
 
         if (fruitsVariants.TryGetValue(vName.ToLower(), out auxGameObj))
             _spawner.setFruitsVariants(auxGameObj[Random.Range(0, auxGameObj.Length)]);

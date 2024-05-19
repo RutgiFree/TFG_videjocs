@@ -28,6 +28,10 @@ public static class Rules
         AUX_4 = 'Y',
         AUX_5 = 'Q',
         AUX_6 = 'K',
+        AUX_7 = 'P',
+        AUX_8 = 'R',
+        AUX_9 = 'T',
+        AUX_10 = 'V',
 
     }
 

@@ -118,14 +118,106 @@ public class DataManager
                     Rules.DNAnucleotides.NONE,
                     new DNAinfo[]
                     {
-                        new DNAinfo("G+[[N]-N]-G[-GN]+N", 10)
+                        new DNAinfo("+GZ-GZX[CC2L[------W][++++++W]]", 10)
                     }
                 },
                 {
                     Rules.DNAnucleotides.GROW,
                     new DNAinfo[]
                     {
-                        new DNAinfo("GG", 10)
+                        new DNAinfo("G", 3),
+                        new DNAinfo("2", 6),
+                        new DNAinfo("3", 10)
+                    }
+                },
+                {
+                    Rules.DNAnucleotides.AUX_1,
+                    new DNAinfo[]
+                    {
+                        new DNAinfo("[+++++YC1L]2[-----YC1L]", 3),
+                        new DNAinfo("[-----YC1L]2[+++++P]", 5),
+                        new DNAinfo("[-----P]2[+++++YC1L]", 6),
+                        new DNAinfo("[+++++YC1L]2[++++++P]", 8),
+                        new DNAinfo("[+++++P]2[-----YC1L]", 10)
+                    }
+                },
+                {
+                    Rules.DNAnucleotides.AUX_2,
+                    new DNAinfo[]
+                    {
+                        new DNAinfo("X", 3),
+                        new DNAinfo("+GZ-K", 5),
+                        new DNAinfo("+GZ-GZ+K", 10)
+                    }
+                },
+                {
+                    Rules.DNAnucleotides.AUX_3,
+                    new DNAinfo[]
+                    {
+                        new DNAinfo("W", 5),
+                        new DNAinfo("L", 10)
+                    }
+                },
+                {
+                    Rules.DNAnucleotides.AUX_4,
+                    new DNAinfo[]
+                    {
+                        new DNAinfo("Y", 1),
+                        new DNAinfo("2[------W][++++++W]Q", 5),
+                        new DNAinfo("3[------W][++++++W]CCC2[++++++++W][------W]Q", 10)
+                    }
+                },
+                {
+                    Rules.DNAnucleotides.AUX_5,
+                    new DNAinfo[]
+                    {
+                        new DNAinfo("Q", 1),
+                        new DNAinfo("CCC1[++++++L][------L]", 5),
+                        new DNAinfo("CCC2[++++++++L][------L]CCC1[++++++L][------L]", 10)
+                    }
+                },
+                {
+                    Rules.DNAnucleotides.AUX_6,
+                    new DNAinfo[]
+                    {
+                        new DNAinfo("K", 3),
+                        new DNAinfo("GZ", 5),
+                        new DNAinfo("GZ+GZ", 8),
+                        new DNAinfo("GZ-GZ", 10),
+                    }
+                },
+                {
+                    Rules.DNAnucleotides.AUX_7,
+                    new DNAinfo[]
+                    {
+                        new DNAinfo("P", 3),
+                        new DNAinfo("2[++++++T][------T]RCC1T", 5),
+                        new DNAinfo("3[++++++T][------T]RCC1T", 10),
+                    }
+                },
+                {
+                    Rules.DNAnucleotides.AUX_8,
+                    new DNAinfo[]
+                    {
+                        new DNAinfo("R", 3),
+                        new DNAinfo("CCC1[++++++++T][------T]", 5),
+                        new DNAinfo("CCC2[++++++++T][------T]CCC1[++++++++T][------T]", 10),
+                    }
+                },
+                {
+                    Rules.DNAnucleotides.AUX_9,
+                    new DNAinfo[]
+                    {
+                        new DNAinfo("T", 5),
+                        new DNAinfo("F", 10),
+                    }
+                },
+                {
+                    Rules.DNAnucleotides.FLOWER,
+                    new DNAinfo[]
+                    {
+                        new DNAinfo("F", 5),
+                        new DNAinfo("D", 10),
                     }
                 }
             };
@@ -133,30 +225,129 @@ public class DataManager
                 new Vegetable(
                         "Tomato",
                         new Rules.states[] { Rules.states.GERMINATION, Rules.states.GROWING, Rules.states.FLOWERING, Rules.states.RIPENING, Rules.states.DYING },
-                        0, myDNA, 0,0);
+                        0, myDNA, 0.15f,1f);
             auxData.Add(veg.name.ToUpper(), veg);
 
-            //cacatua
+            //pumpkin
             myDNA = new Dictionary<Rules.DNAnucleotides, DNAinfo[]>
             {
                 {//G+[[N]-N]-F[-GN]+N //G[+N][-N]
                     Rules.DNAnucleotides.NONE,
                     new DNAinfo[]
                     {
-                        new DNAinfo("[++G][--G][G][+G][-G]", 10)
+                        new DNAinfo("[++GZL][--GXL]", 10)
                     }
                 },
                 {
-                    Rules.DNAnucleotides.GROW,
+                    Rules.DNAnucleotides.GROW_1,
                     new DNAinfo[]
                     {
-                        new DNAinfo("GG", 10)
+                        new DNAinfo("1", 5),
+                        new DNAinfo("2", 10)
                     }
-                }
+                },
+                {
+                    Rules.DNAnucleotides.AUX_1,
+                    new DNAinfo[]
+                    {
+                        new DNAinfo("Z", 5),
+                        new DNAinfo("++G++G++G++G[----L]W", 7),
+                        new DNAinfo("++G[L]++G++G++G[----L]W", 10)
+                    }
+                },
+                {
+                    Rules.DNAnucleotides.AUX_2,
+                    new DNAinfo[]
+                    {
+                        new DNAinfo("X", 5),
+                        new DNAinfo("--G--G--G--G[++++L]Y", 7),
+                        new DNAinfo("--G[L]--G--G--G[++++L]Y", 10)
+                    }
+                },
+                {
+                    Rules.DNAnucleotides.AUX_3,
+                    new DNAinfo[]
+                    {
+                        new DNAinfo("W", 5),
+                        new DNAinfo("-1[Q]+1[Q]T", 10)
+                    }
+                },
+                {
+                    Rules.DNAnucleotides.AUX_4,
+                    new DNAinfo[]
+                    {
+                        new DNAinfo("Y", 5),
+                        new DNAinfo("+1[K]-1[K]V", 10)
+                    }
+                },
+                {
+                    Rules.DNAnucleotides.AUX_5,
+                    new DNAinfo[]
+                    {
+                        new DNAinfo("Q", 1),
+                        new DNAinfo("P", 2),
+                        new DNAinfo("----L", 5),
+                        new DNAinfo("++++L", 10)
+                    }
+                },
+                {
+                    Rules.DNAnucleotides.AUX_6,
+                    new DNAinfo[]
+                    {
+                        new DNAinfo("K", 1),
+                        new DNAinfo("R", 2),
+                        new DNAinfo("++++L", 5),
+                        new DNAinfo("----L", 10)
+                    }
+                },
+                {
+                    Rules.DNAnucleotides.AUX_7,
+                    new DNAinfo[]
+                    {
+                        new DNAinfo("P", 6),
+                        new DNAinfo("++++F", 10),
+                    }
+                },
+                {
+                    Rules.DNAnucleotides.AUX_8,
+                    new DNAinfo[]
+                    {
+                        new DNAinfo("R", 1),
+                        new DNAinfo("----F", 10)
+                    }
+                },
+                {
+                    Rules.DNAnucleotides.AUX_9,
+                    new DNAinfo[]
+                    {
+                        new DNAinfo("T", 1),
+                        new DNAinfo("-1[Q]+1[Q]-1[P]+1", 5),
+                        new DNAinfo("-1[Q]+1[P]-1[Q]+1[Q]-1", 7),
+                        new DNAinfo("-1[Q]+1[Q]-1[Q]+1[P]-1[Q]+1", 10)
+                    }
+                },
+                {
+                    Rules.DNAnucleotides.AUX_10,
+                    new DNAinfo[]
+                    {
+                        new DNAinfo("V", 1),
+                        new DNAinfo("+1[K]-1[K]+1[R]-1", 5),
+                        new DNAinfo("+1[K]-1[R]+1[K]-1[K]+1", 7),
+                        new DNAinfo("+1[K]-1[K]+1[K]-1[R]+1[K]-1", 10)
+                    }
+                },
+                {
+                    Rules.DNAnucleotides.FLOWER,
+                    new DNAinfo[]
+                    {
+                        new DNAinfo("F", 5),
+                        new DNAinfo("D", 10)
+                    }
+                },
             };
             veg =
                 new Vegetable(
-                        "Cacatua",
+                        "Pumpkin",
                         new Rules.states[] { Rules.states.GERMINATION, Rules.states.GROWING, Rules.states.FLOWERING, Rules.states.RIPENING, Rules.states.DYING },
                         0, myDNA, 0, 0);
             auxData.Add(veg.name.ToUpper(), veg);

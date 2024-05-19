@@ -136,25 +136,173 @@
     ],
     "myState": 1,
     "myStateIndex": 0,
-    "width": 0.0,
-    "height": 0.0,
+    "width": 0.15,
+    "height": 1.0,
     "DNA": {
       "NONE": [
         {
-          "info": "G+[[N]-N]-G[-GN]+N",
+          "info": "+GZ-GZX[CC2L[------W][++++++W]]",
           "probability": 10.0
         }
       ],
       "GROW": [
         {
-          "info": "GG",
+          "info": "G",
+          "probability": 3.0
+        },
+        {
+          "info": "2",
+          "probability": 6.0
+        },
+        {
+          "info": "3",
+          "probability": 10.0
+        }
+      ],
+      "AUX_1": [
+        {
+          "info": "[+++++YC1L]2[-----YC1L]",
+          "probability": 3.0
+        },
+        {
+          "info": "[-----YC1L]2[+++++P]",
+          "probability": 5.0
+        },
+        {
+          "info": "[-----P]2[+++++YC1L]",
+          "probability": 6.0
+        },
+        {
+          "info": "[+++++YC1L]2[++++++P]",
+          "probability": 8.0
+        },
+        {
+          "info": "[+++++P]2[-----YC1L]",
+          "probability": 10.0
+        }
+      ],
+      "AUX_2": [
+        {
+          "info": "X",
+          "probability": 3.0
+        },
+        {
+          "info": "+GZ-K",
+          "probability": 5.0
+        },
+        {
+          "info": "+GZ-GZ+K",
+          "probability": 10.0
+        }
+      ],
+      "AUX_3": [
+        {
+          "info": "W",
+          "probability": 5.0
+        },
+        {
+          "info": "L",
+          "probability": 10.0
+        }
+      ],
+      "AUX_4": [
+        {
+          "info": "Y",
+          "probability": 1.0
+        },
+        {
+          "info": "2[------W][++++++W]Q",
+          "probability": 5.0
+        },
+        {
+          "info": "3[------W][++++++W]CCC2[++++++++W][------W]Q",
+          "probability": 10.0
+        }
+      ],
+      "AUX_5": [
+        {
+          "info": "Q",
+          "probability": 1.0
+        },
+        {
+          "info": "CCC1[++++++L][------L]",
+          "probability": 5.0
+        },
+        {
+          "info": "CCC2[++++++++L][------L]CCC1[++++++L][------L]",
+          "probability": 10.0
+        }
+      ],
+      "AUX_6": [
+        {
+          "info": "K",
+          "probability": 3.0
+        },
+        {
+          "info": "GZ",
+          "probability": 5.0
+        },
+        {
+          "info": "GZ+GZ",
+          "probability": 8.0
+        },
+        {
+          "info": "GZ-GZ",
+          "probability": 10.0
+        }
+      ],
+      "AUX_7": [
+        {
+          "info": "P",
+          "probability": 3.0
+        },
+        {
+          "info": "2[++++++T][------T]RCC1T",
+          "probability": 5.0
+        },
+        {
+          "info": "3[++++++T][------T]RCC1T",
+          "probability": 10.0
+        }
+      ],
+      "AUX_8": [
+        {
+          "info": "R",
+          "probability": 3.0
+        },
+        {
+          "info": "CCC1[++++++++T][------T]",
+          "probability": 5.0
+        },
+        {
+          "info": "CCC2[++++++++T][------T]CCC1[++++++++T][------T]",
+          "probability": 10.0
+        }
+      ],
+      "AUX_9": [
+        {
+          "info": "T",
+          "probability": 5.0
+        },
+        {
+          "info": "F",
+          "probability": 10.0
+        }
+      ],
+      "FLOWER": [
+        {
+          "info": "F",
+          "probability": 5.0
+        },
+        {
+          "info": "D",
           "probability": 10.0
         }
       ]
     }
   },
-  "CACATUA": {
-    "name": "Cacatua",
+  "PUMPKIN": {
+    "name": "Pumpkin",
     "myStates": [
       1,
       2,
@@ -169,13 +317,167 @@
     "DNA": {
       "NONE": [
         {
-          "info": "[++G][--G][G][+G][-G]",
+          "info": "[++GZL][--GXL]",
           "probability": 10.0
         }
       ],
-      "GROW": [
+      "GROW_1": [
         {
-          "info": "GG",
+          "info": "1",
+          "probability": 5.0
+        },
+        {
+          "info": "2",
+          "probability": 10.0
+        }
+      ],
+      "AUX_1": [
+        {
+          "info": "Z",
+          "probability": 5.0
+        },
+        {
+          "info": "++G++G++G++G[----L]W",
+          "probability": 7.0
+        },
+        {
+          "info": "++G[L]++G++G++G[----L]W",
+          "probability": 10.0
+        }
+      ],
+      "AUX_2": [
+        {
+          "info": "X",
+          "probability": 5.0
+        },
+        {
+          "info": "--G--G--G--G[++++L]Y",
+          "probability": 7.0
+        },
+        {
+          "info": "--G[L]--G--G--G[++++L]Y",
+          "probability": 10.0
+        }
+      ],
+      "AUX_3": [
+        {
+          "info": "W",
+          "probability": 5.0
+        },
+        {
+          "info": "-1[Q]+1[Q]T",
+          "probability": 10.0
+        }
+      ],
+      "AUX_4": [
+        {
+          "info": "Y",
+          "probability": 5.0
+        },
+        {
+          "info": "+1[K]-1[K]V",
+          "probability": 10.0
+        }
+      ],
+      "AUX_5": [
+        {
+          "info": "Q",
+          "probability": 1.0
+        },
+        {
+          "info": "P",
+          "probability": 2.0
+        },
+        {
+          "info": "----L",
+          "probability": 5.0
+        },
+        {
+          "info": "++++L",
+          "probability": 10.0
+        }
+      ],
+      "AUX_6": [
+        {
+          "info": "K",
+          "probability": 1.0
+        },
+        {
+          "info": "R",
+          "probability": 2.0
+        },
+        {
+          "info": "++++L",
+          "probability": 5.0
+        },
+        {
+          "info": "----L",
+          "probability": 10.0
+        }
+      ],
+      "AUX_7": [
+        {
+          "info": "P",
+          "probability": 6.0
+        },
+        {
+          "info": "++++F",
+          "probability": 10.0
+        }
+      ],
+      "AUX_8": [
+        {
+          "info": "R",
+          "probability": 1.0
+        },
+        {
+          "info": "----F",
+          "probability": 10.0
+        }
+      ],
+      "AUX_9": [
+        {
+          "info": "T",
+          "probability": 1.0
+        },
+        {
+          "info": "-1[Q]+1[Q]-1[P]+1",
+          "probability": 5.0
+        },
+        {
+          "info": "-1[Q]+1[P]-1[Q]+1[Q]-1",
+          "probability": 7.0
+        },
+        {
+          "info": "-1[Q]+1[Q]-1[Q]+1[P]-1[Q]+1",
+          "probability": 10.0
+        }
+      ],
+      "AUX_10": [
+        {
+          "info": "V",
+          "probability": 1.0
+        },
+        {
+          "info": "+1[K]-1[K]+1[R]-1",
+          "probability": 5.0
+        },
+        {
+          "info": "+1[K]-1[R]+1[K]-1[K]+1",
+          "probability": 7.0
+        },
+        {
+          "info": "+1[K]-1[K]+1[K]-1[R]+1[K]-1",
+          "probability": 10.0
+        }
+      ],
+      "FLOWER": [
+        {
+          "info": "F",
+          "probability": 5.0
+        },
+        {
+          "info": "D",
           "probability": 10.0
         }
       ]

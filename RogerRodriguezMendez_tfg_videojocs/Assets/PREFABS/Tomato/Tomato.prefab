@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4856424641363350846}
   - component: {fileID: 4549490906095987507}
   m_Layer: 0
-  m_Name: VDirector
+  m_Name: Tomato
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -105,49 +105,21 @@ MonoBehaviour:
       value:
       - {fileID: 5662727328928595423, guid: 827a39a1cd01cac42997aa318c4c597e, type: 3}
       - {fileID: 5662727328928595423, guid: 6264da4ecab90224b962f7851073cb24, type: 3}
-    - key: pumpkin
-      value:
-      - {fileID: 5662727328928595423, guid: 99e90519e2943ad4f99fd7201d5db2f4, type: 3}
-      - {fileID: 5662727328928595423, guid: 8a744af51920d2d499a03e49f3f64d7a, type: 3}
   fruitsMap:
     elementsGObjects:
-    - key: carrot
-      value:
-      - {fileID: 5618682790547192317, guid: 4632d3179b73aeb4db78862cb1640baa, type: 3}
-      - {fileID: 5618682790547192317, guid: 7a5a0c67170083244a90b43a8c190e64, type: 3}
     - key: tomato
       value:
       - {fileID: 5618682790547192317, guid: 489b5b5d2d613d2419ac9cd4f879b94e, type: 3}
       - {fileID: 5618682790547192317, guid: 5782149f35710c640851698c3630af4a, type: 3}
-    - key: pumpkin
-      value:
-      - {fileID: 5618682790547192317, guid: 844caba58cae4da49a95363fafc738ed, type: 3}
-      - {fileID: 5618682790547192317, guid: 14a4ffba0b548164b9dc611aa60cb888, type: 3}
   leafsMap:
     elementsGObjects:
-    - key: carrot
-      value:
-      - {fileID: 5662727328928595423, guid: c2a500907a1a8254d8b59a0d99ffef47, type: 3}
-      - {fileID: 5662727328928595423, guid: 29050106300a2e54a815807d14acd9df, type: 3}
     - key: tomato
       value:
       - {fileID: 5662727328928595423, guid: adf855206e004b3478904f5c74c9289a, type: 3}
       - {fileID: 5662727328928595423, guid: 074ee7a507d582741884f785082a2e3d, type: 3}
-    - key: pumpkin
-      value:
-      - {fileID: 5662727328928595423, guid: 6e3dcc4503d1ebc4baca064d0aadb00c, type: 3}
-      - {fileID: 5662727328928595423, guid: ee487bc446f57cb4ca6d061a2410d569, type: 3}
   branchesMap:
     materialElements:
-    - key: carrot
-      value:
-      - {fileID: 2100000, guid: 5574c4867ab1f2d4cb3ad2ab1919821e, type: 2}
-      - {fileID: 2100000, guid: 631fe72f57d08334fbf460fc9c55fcd2, type: 2}
     - key: tomato
-      value:
-      - {fileID: 2100000, guid: 5574c4867ab1f2d4cb3ad2ab1919821e, type: 2}
-      - {fileID: 2100000, guid: 631fe72f57d08334fbf460fc9c55fcd2, type: 2}
-    - key: pumpkin
       value:
       - {fileID: 2100000, guid: 5574c4867ab1f2d4cb3ad2ab1919821e, type: 2}
       - {fileID: 2100000, guid: 631fe72f57d08334fbf460fc9c55fcd2, type: 2}
@@ -166,8 +138,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   vProxy: {fileID: 4856424641363350846}
-  vName: 
+  vName: tomato
   vIteretionsDone: 0
-  vIteretionsToDo: 0
+  vIteretionsToDo: 10
   vDNA: 
   vState: 0
