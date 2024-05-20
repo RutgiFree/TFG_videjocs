@@ -235,7 +235,7 @@ public class DataManager
                     Rules.DNAnucleotides.NONE,
                     new DNAinfo[]
                     {
-                        new DNAinfo("[++GZL][--GXL]", 10)
+                        new DNAinfo("G[++GZ[--------L]G][--GX[++++++++L]G]", 10)
                     }
                 },
                 {
@@ -247,12 +247,20 @@ public class DataManager
                     }
                 },
                 {
+                    Rules.DNAnucleotides.GROW_2,
+                    new DNAinfo[]
+                    {
+                        new DNAinfo("2", 5),
+                        new DNAinfo("3", 10)
+                    }
+                },
+                {
                     Rules.DNAnucleotides.AUX_1,
                     new DNAinfo[]
                     {
                         new DNAinfo("Z", 5),
-                        new DNAinfo("++G++G++G++G[----L]W", 7),
-                        new DNAinfo("++G[L]++G++G++G[----L]W", 10)
+                        new DNAinfo("++G++G++G++G[--------L]W", 7),
+                        new DNAinfo("++G[--------L]++G++G++G[--------L]W", 10)
                     }
                 },
                 {
@@ -260,8 +268,8 @@ public class DataManager
                     new DNAinfo[]
                     {
                         new DNAinfo("X", 5),
-                        new DNAinfo("--G--G--G--G[++++L]Y", 7),
-                        new DNAinfo("--G[L]--G--G--G[++++L]Y", 10)
+                        new DNAinfo("--G--G--G--G[++++++++L]Y", 7),
+                        new DNAinfo("--G[++++++++L]--G--G--G[++++++++L]Y", 10)
                     }
                 },
                 {
@@ -286,8 +294,7 @@ public class DataManager
                     {
                         new DNAinfo("Q", 1),
                         new DNAinfo("P", 2),
-                        new DNAinfo("----L", 5),
-                        new DNAinfo("++++L", 10)
+                        new DNAinfo("--------L", 10)
                     }
                 },
                 {
@@ -296,8 +303,7 @@ public class DataManager
                     {
                         new DNAinfo("K", 1),
                         new DNAinfo("R", 2),
-                        new DNAinfo("++++L", 5),
-                        new DNAinfo("----L", 10)
+                        new DNAinfo("++++++++L", 10)
                     }
                 },
                 {
@@ -305,7 +311,7 @@ public class DataManager
                     new DNAinfo[]
                     {
                         new DNAinfo("P", 6),
-                        new DNAinfo("++++F", 10),
+                        new DNAinfo("++++++F", 10),
                     }
                 },
                 {
@@ -313,7 +319,7 @@ public class DataManager
                     new DNAinfo[]
                     {
                         new DNAinfo("R", 1),
-                        new DNAinfo("----F", 10)
+                        new DNAinfo("------F", 10)
                     }
                 },
                 {
@@ -349,7 +355,7 @@ public class DataManager
                 new Vegetable(
                         "Pumpkin",
                         new Rules.states[] { Rules.states.GERMINATION, Rules.states.GROWING, Rules.states.FLOWERING, Rules.states.RIPENING, Rules.states.DYING },
-                        0, myDNA, 0, 0);
+                        0, myDNA, 0.25f, 1.5f);
             auxData.Add(veg.name.ToUpper(), veg);
 
 

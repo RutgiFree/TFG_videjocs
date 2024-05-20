@@ -312,12 +312,12 @@
     ],
     "myState": 1,
     "myStateIndex": 0,
-    "width": 0.0,
-    "height": 0.0,
+    "width": 0.25,
+    "height": 1.5,
     "DNA": {
       "NONE": [
         {
-          "info": "[++GZL][--GXL]",
+          "info": "G[++GZ[--------L]G][--GX[++++++++L]G]",
           "probability": 10.0
         }
       ],
@@ -331,17 +331,27 @@
           "probability": 10.0
         }
       ],
+      "GROW_2": [
+        {
+          "info": "2",
+          "probability": 5.0
+        },
+        {
+          "info": "3",
+          "probability": 10.0
+        }
+      ],
       "AUX_1": [
         {
           "info": "Z",
           "probability": 5.0
         },
         {
-          "info": "++G++G++G++G[----L]W",
+          "info": "++G++G++G++G[--------L]W",
           "probability": 7.0
         },
         {
-          "info": "++G[L]++G++G++G[----L]W",
+          "info": "++G[--------L]++G++G++G[--------L]W",
           "probability": 10.0
         }
       ],
@@ -351,11 +361,11 @@
           "probability": 5.0
         },
         {
-          "info": "--G--G--G--G[++++L]Y",
+          "info": "--G--G--G--G[++++++++L]Y",
           "probability": 7.0
         },
         {
-          "info": "--G[L]--G--G--G[++++L]Y",
+          "info": "--G[++++++++L]--G--G--G[++++++++L]Y",
           "probability": 10.0
         }
       ],
@@ -389,11 +399,7 @@
           "probability": 2.0
         },
         {
-          "info": "----L",
-          "probability": 5.0
-        },
-        {
-          "info": "++++L",
+          "info": "--------L",
           "probability": 10.0
         }
       ],
@@ -407,11 +413,7 @@
           "probability": 2.0
         },
         {
-          "info": "++++L",
-          "probability": 5.0
-        },
-        {
-          "info": "----L",
+          "info": "++++++++L",
           "probability": 10.0
         }
       ],
@@ -421,7 +423,7 @@
           "probability": 6.0
         },
         {
-          "info": "++++F",
+          "info": "++++++F",
           "probability": 10.0
         }
       ],
@@ -431,7 +433,7 @@
           "probability": 1.0
         },
         {
-          "info": "----F",
+          "info": "------F",
           "probability": 10.0
         }
       ],
