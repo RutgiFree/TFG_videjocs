@@ -230,7 +230,6 @@ public class VegetableProxyMesh : MonoBehaviour
                 }
             }
 
-            //sectionsController.setRules("");
             if (generalMeshInfo == null || generalMeshInfo.isEmpty()) sectionsController.setMeshInfo(sectionsController.getMeshInfo());
             else sectionsController.setMeshInfo(generalMeshInfo);
             sectionsController.EndSection("");
@@ -804,11 +803,6 @@ public class VegetableProxyMesh : MonoBehaviour
                 //per tant, el centre inferior es (0'5,0), i el nostre centre absolñut en coordenades de vertex es (0,0).
                 //Savent aixo cal fer una transformacio per que no hi agi cionflictes en les coordenades, i per tant poder aplicar una gradiant de colors.
 
-                //aixi doncs, agafam una cordenada de vertes, per exemple (-0'5,0) que equivaldria a  un verteex inferior a la dreta,
-                //i la dividim per l'alçada, que es pot obtenir mitjant "bounds.size.y", fent que per alçada tota la mesh capigui dintre del material.
-                //Per el que fa l'amplada, es fa un calcul mes llarg, on agafem de la cordenada la seva X, i li sumem l'amplada, que es pot obtenir mitjant "bounds.size.x"
-
-        
                 uvs[i] = new Vector2(0, y);
                 i++;
 

@@ -6,17 +6,14 @@ using UnityEditor;
 using UnityEngine;
 using Newtonsoft.Json;
 
+#if UNITY_EDITOR
 [InitializeOnLoad]
+#endif
 public class DataManager
 {
     const string dataPath= "MyGameData";
     private static Dictionary<string, Vegetable> vegetablesMemory;
     public static string[] vegetablesNames { get; private set; }
-
-    //bugs detectats:
-    //si algun dels "no base" son buits, peta: (solucionat) -> treiem de la llista d'elements a unirse aquells que son buits
-    //si s'incie amb [ sense una abse feta peta: (solucionat) -> creem unma base de 2 vertex a partir del Left i Right del spawner (no mg)
-    //si s'inicie amb [ i despres va un [ sene haber c reat res peta;
 
     static DataManager()
     {
@@ -431,12 +428,7 @@ public class DataManager
                 // Deserialize the JSON string into a Dictionary
                 var loadedVegetables = JsonConvert.DeserializeObject<Dictionary<string, Vegetable>>(rawData);
 
-                var debug = "";
-                foreach(Vegetable v in loadedVegetables.Values)
-                {
-                    debug = debug + v.debug() + "\n";
-                }
-                Debug.Log("LOADED: " + loadedVegetables.Count+ "\n"+ debug);
+                Debug.Log("LOADED: " + loadedVegetables.Count);
 
                 return loadedVegetables;
             }

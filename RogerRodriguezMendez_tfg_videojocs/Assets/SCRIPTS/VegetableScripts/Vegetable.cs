@@ -15,16 +15,11 @@ public class DNAinfo
         info = _info;
         probability = _probability;
     }
-
-    public string debug()//es per comprar que funcione be el que vull intentar
-    {
-        return "{" + info + ", " + probability + "}";
-    }
 }
 
 [Serializable]
-public class Vegetable  //es el tipus especific de contructor
-{//vegetavle -> nom //eredar i vegetabler?
+public class Vegetable  
+{
 
     public string name;
     public Rules.states[] myStates;
@@ -92,36 +87,5 @@ public class Vegetable  //es el tipus especific de contructor
 
         }
         return DNAinfos[0].info;
-    }
-
-
-
-    public string debug()//es per comprar que funcione be el que vull intentar
-    {
-        return "{\n\t" + name+", "+ debugStates() + ", " + myState + ", " + myStateIndex+ ", \n\t" + debugDNA() + "\n}";
-    }
-    private string debugStates()//es per comprar que funcione be el que vull intentar
-    {
-        string retorn = "";
-        for (int i = 0; i < myStates.Length; i++)
-        {
-            if(retorn.Equals("")) retorn = myStates[i].ToString();
-            else retorn = retorn + ", " + myStates[i];
-        }
-        return "["+retorn+"]";
-    }
-    private string debugDNA()//es per comprar que funcione be el que vull intentar
-    {
-        string retorn = "";
-
-        foreach(Rules.DNAnucleotides key in DNA.Keys)
-        {
-            foreach(DNAinfo dna in DNA[key])
-            {
-                if (retorn.Equals("")) retorn = "{ "+key +", "+dna.debug()+ "}";
-                else retorn = retorn + ",\n\t" + "{ " + key + ", " + dna.debug() + "}";
-            }
-        }
-        return "{\n\t" + retorn + "\n\t}";
     }
 }

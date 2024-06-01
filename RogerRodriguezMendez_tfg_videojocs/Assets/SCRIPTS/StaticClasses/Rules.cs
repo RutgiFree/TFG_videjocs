@@ -16,12 +16,13 @@ public static class Rules
         FLOWER = 'F',//vull una flor 
         FRUIT = 'D',//vull una fruita
         LEAF = 'L',//vull una fulla
-        START_BRANCH = '[',
-        END_BRANCH = ']',
-        POSITIVE_ROTATION = '+',
-        NEGATIVE_ROTATION = '-',
+        START_BRANCH = '[',//nou inici
+        END_BRANCH = ']',//nou final
+        POSITIVE_ROTATION = '+',//rotacio positiva
+        NEGATIVE_ROTATION = '-',//rotacio negativa
         CONTINUO_ROTATION = 'C',//vull que segueixi rotan en la mateixa direccio
-        //aquest son diferents auxiliars, per tant no tenen cap funcio especifica, son per la subtitucio de regles, fent que sigui mes felxible la generacio:
+        //aquest son diferents auxiliars, per tant no tenen cap funcio especifica,
+        //son per la subtitucio de regles, fent que sigui mes felxible la generacio:
         AUX_1 = 'Z',
         AUX_2 = 'X',
         AUX_3 = 'W',
