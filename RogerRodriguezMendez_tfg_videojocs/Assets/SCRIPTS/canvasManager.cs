@@ -57,5 +57,8 @@ public class canvasManager : MonoBehaviour
         myCameraScript.resetSize();
     }
 
-
+    public void doExitGame()
+    {
+        Application.Quit();
+    }
 }
